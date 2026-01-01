@@ -6,6 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Take It Easy! — Study Resources</title>
   <meta name="description" content="Free study resources for FBISE SSC-I and Cambridge IGCSE/O Level." />
+  <!-- Favicon & theme color -->
+  <link rel="icon" href="assets/take-it-easy-logo.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#1e40af" />
   <!--
     Single-file build
     -------------------------------------------------
@@ -98,6 +101,32 @@
     #viewer-header { display:flex; align-items:center; justify-content:space-between; padding:10px; border-bottom:1px solid var(--border); }
     #viewer-body { flex: 1; }
     #viewer-body iframe, #viewer-body embed { width: 100%; height: 100%; border: 0; }
+
+    /* Mobile / small-device adjustments */
+    @media (max-width: 640px) {
+      .grid { grid-template-columns: 1fr; }
+      .pill { padding: 18px 16px; }
+      .action-btn { padding: 14px 12px; font-size: 16px; }
+      .btn-pill { padding: 12px 14px; font-size: 15px; }
+      /* Make overlays and panels full width on mobile */
+      #viewer-panel { width: 100vw; height: 100vh; border-radius: 0; max-width: none; max-height: none; }
+      #viewer-panel .viewer-header { position: absolute; top: 0; left: 0; right: 0; z-index: 6; padding: 12px; background: rgba(255,255,255,0.95); border-bottom: none; }
+      #viewer-body { padding-top: 64px; overflow: auto; }
+      #viewer-body iframe, #viewer-body embed { height: calc(100vh - 64px); }
+      /* Overlays take full screen and align to top */
+      #search-overlay, #file-picker-overlay, #viewer-overlay { place-items: start; align-items: start; }
+      #search-panel, #file-picker-overlay > div { width: 100%; margin: 8px; border-radius: 12px; }
+      /* Increase tap targets */
+      .action-btn, .btn-pill { min-height: 44px; }
+    }
+
+    /* Touch-specific adjustments */
+    .touch .action-btn, .touch .btn-pill { padding: 16px 18px; }
+
+    /* Small tweak for very narrow devices */
+    @media (max-width: 360px){
+      .btn-pill, .action-btn { font-size: 14px; padding: 12px; }
+    }
 
     /* Footer */
     .footer { border-top: 1px solid var(--border); margin-top: 40px; }
@@ -295,21 +324,21 @@ We are committed to supporting your educational journey. Explore our resources, 
     // ----------------------------------------------
     const DATA = {
       fbise: [
-        { subject: "English", code: "SSC-I", files: [ { label: "Book", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/english_book.pdf" }, { label: "Grammar", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/english_grammar.pdf" } ] },
-        { subject: "Urdu", code: "SSC-I", files: [ { label: "Book", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/urdu_book.pdf" } ] },
-        { subject: "Mathematics", code: "SSC-I", files: [ { label: "Book", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/math_book.pdf" } ] },
-        { subject: "Islamiyat", code: "SSC-I", files: [ { label: "Book", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/islamiyat_book.pdf" } ] },
-        { subject: "Chemistry", code: "SSC-I", files: [ { label: "Book", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/chemistry_book.pdf" }, { label: "Practical Book", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/chemistry_practical.pdf" } ] },
-        { subject: "Physics", code: "SSC-I", files: [ { label: "Book", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/physics_book.pdf" } ] },
-        { subject: "Computer", code: "SSC-I", files: [ { label: "Book", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/computer_book.pdf" } ] }
+        { subject: "English", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1C4eBxOLaS558CvTLIMC_OFySqNoIRWqB/view" }, { label: "Grammar", path: "https://drive.google.com/file/d/1El7MQKvbbDrP3Cg_sNh7305hGy9Aumuu/view" } ] },
+        { subject: "Urdu", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1HxLnU7K03s4pMMO1zt8F6ILm98g8KKg2/view" } ] },
+        { subject: "Mathematics", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1mj2YNK3luES-iCpFsX26dVSkdTqmVxcB/view" } ] },
+        { subject: "Islamiyat", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1-qMSpSjhPdcrkWo5LbHj8u-mG1u9q6dY/view" } ] },
+        { subject: "Chemistry", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1nl3kS1kkQov4TcKZxNy9jqBhbh2o6o7M/view" }, { label: "Practical Book", path: "https://drive.google.com/file/d/1MDs4MKYWWJXY6fcTKGBO_TYmA7fNsq-i/view" } ] },
+        { subject: "Physics", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1RlOzWYw4wjAC2kbtCljfJ1jNMqC8GN4l/view" } ] },
+        { subject: "Computer", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1CoFKEvUo4C2csPytO21_IGfTDlUP2072/view" } ] }
       ],
       igcse: [
-        { subject: "English as a Second Language", code: "0510", files: [ { label: "Book", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/0510_book.pdf" }, { label: "Syllabus", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/0510_syllabus.pdf" } ] },
-        { subject: "Mathematics (Additional)", code: "0606", files: [ { label: "Book", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/0606_book.pdf" }, { label: "Syllabus", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/0606_syllabus.pdf" } ] },
-        { subject: "Mathematics", code: "0580", files: [ { label: "Book", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/0580_book.pdf" }, { label: "Syllabus", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/0580_syllabus.pdf" } ] },
-        { subject: "Physics", code: "0625", files: [ { label: "Book", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/0625_book.pdf" }, { label: "Study Guide", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/0625_study_guide.pdf" }, { label: "Workbook", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/0625_workbook.pdf" }, { label: "Syllabus", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1//0625_syllabus.pdf" } ] },
-        { subject: "Chemistry", code: "0620", files: [ { label: "Book", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/0620_book.pdf" }, { label: "Study Guide", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/0620_study_guide.pdf" }, { label: "Workbook", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/0620_workbook.pdf" }, { label: "Practical Workbook", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/0620_practical_workbook.pdf" }, { label: "Syllabus", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/0620_syllabus.pdf" } ] },
-        { subject: "Computer Science", code: "0478", files: [ { label: "Book", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/0478_book.pdf" }, { label: "Study Guide", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/0478_study_guide.pdf" }, { label: "Syllabus", path: "https://github.com/aarizzqadeer/takeiteasy/releases/download/v1/0478_syllabus.pdf" } ] }
+        { subject: "English as a Second Language", code: "0510", files: [ { label: "Book", path: "https://drive.google.com/file/d/1urUVuCNNdzTqowJZdxAR7jDr2XC9RV2O/view" }, { label: "Syllabus", path: "https://drive.google.com/file/d/11alyYszawyE7ntFi13YBhMNfC6Gp6wzV/view" } ] },
+        { subject: "Mathematics (Additional)", code: "0606", files: [ { label: "Book", path: "https://drive.google.com/file/d/1CEo7G3Biv0DFsLZ_EaEMT4R1H5x-K6ei/view" }, { label: "Syllabus", path: "https://drive.google.com/file/d/1YyLaYSAJA19Li0Pfl8Vqv_YYrCY6caD8/view" } ] },
+        { subject: "Mathematics", code: "0580", files: [ { label: "Book", path: "https://drive.google.com/file/d/1Qdm4Mt18RKIcWIdM5khfCZwMhIaOigtg/view" }, { label: "Syllabus", path: "https://drive.google.com/file/d/1w3amzdvEt83n207Tyy0R6QgOKkTpX5-s/view" } ] },
+        { subject: "Physics", code: "0625", files: [ { label: "Book", path: "https://drive.google.com/file/d/18OsnX_8KqW8V4lJwBdYiffIHwFlhCkWj/view" }, { label: "Study Guide", path: "https://drive.google.com/file/d/1DhmcbuiMxA83vRTD375dDGGbHDGyWccC/view" }, { label: "Workbook", path: "https://drive.google.com/file/d/10lf27YNJ7ghdSH8AVR_eFFMYuD7NF-bU/view" }, { label: "Syllabus", path: "https://drive.google.com/file/d/1OVlSKcMDd-9t8VDQFLB-knlNwZEB2sFF/view" } ] },
+        { subject: "Chemistry", code: "0620", files: [ { label: "Book", path: "https://drive.google.com/file/d/1eMCjYY_X5RYv1ldPkvm443WZb_S177r4/view" }, { label: "Study Guide", path: "https://drive.google.com/file/d/1U1HjbQEk4KwzleFBqVFfmNkUonnSQjjV/view" }, { label: "Workbook", path: "https://drive.google.com/file/d/1etu4s48EiO3FE88AmdnbaU7nZlY7dEwo/view" }, { label: "Practical Workbook", path: "https://drive.google.com/file/d/10PPOBN7cNsMLnleToUBXbnmxwBzZyIcQ/view" }, { label: "Syllabus", path: "https://drive.google.com/file/d/1F_p0xbsFzHzJcncF18gRQtzmJTHXRbcm/view" } ] },
+        { subject: "Computer Science", code: "0478", files: [ { label: "Book", path: "https://drive.google.com/file/d/148YUSYQHgTQtpYanvxt7y6tlNq36H-or/view" }, { label: "Study Guide", path: "https://drive.google.com/file/d/1Tii1zydHKIKmcHdBuNymUSA7dRKTFSYy/view" }, { label: "Syllabus", path: "https://drive.google.com/file/d/1uh84BhPVgUymNLFiu_6osrxOiIRbutCM/view" } ] }
       ]
     };
     function showLoader(){ const o=document.getElementById('loading-overlay'); if (!o) return; o.style.display='flex'; o.setAttribute('aria-hidden','false'); }
@@ -361,7 +390,12 @@ We are committed to supporting your educational journey. Explore our resources, 
       const dlBtn = document.createElement('a');
       dlBtn.className = 'action-btn primary';
       dlBtn.textContent = 'Download';
-      dlBtn.href = item.files[0]?.path || '#';
+      let dlHref = item.files[0]?.path || '#';
+      if (isDriveUrl(dlHref)){
+        const id = getDriveFileId(dlHref);
+        if (id) dlHref = driveDownloadUrl(id);
+      }
+      dlBtn.href = dlHref;
       dlBtn.download = '';
       actions.append(viewBtn, dlBtn);
       card.append(title, meta, files, actions);
@@ -429,36 +463,230 @@ We are committed to supporting your educational journey. Explore our resources, 
     }
 
     // ----------------------------------------------
+    // Helpers: Google Drive URL parsing
+    // ----------------------------------------------
+    function isDriveUrl(u){
+      if(!u) return false;
+      try{ const url = new URL(u); return url.hostname.endsWith('drive.google.com') || url.hostname.endsWith('docs.google.com'); }catch(e){return false;}
+    }
+    function getDriveFileId(u){
+      try{
+        const url = new URL(u);
+        const m = url.pathname.match(/\/file\/d\/([^\/]+)/);
+        if (m) return m[1];
+        if (url.searchParams.get('id')) return url.searchParams.get('id');
+        return null;
+      } catch(e){ return null; }
+    }
+    function drivePreviewUrl(id){ return `https://drive.google.com/file/d/${id}/preview`; }
+    function driveDownloadUrl(id){ return `https://drive.google.com/uc?export=download&id=${id}`; }
+
+    // ----------------------------------------------
     // Viewer overlay (supports URLs and base64 data URIs)
     // ----------------------------------------------
-    function openViewer(file){
+    let currentViewerObjectUrl = null;
+
+    // Make layout adapt to device type (mobile/touch)
+    function setupResponsive(){
+      try{
+        const mq = window.matchMedia('(max-width:640px)');
+        function apply(){
+          document.body.classList.toggle('device-mobile', mq.matches);
+          const vp = document.getElementById('viewer-panel');
+          if (vp) vp.classList.toggle('mobile', mq.matches);
+        }
+        apply();
+        if (mq.addEventListener) mq.addEventListener('change', apply); else mq.addListener(apply);
+        if ('ontouchstart' in window) document.documentElement.classList.add('touch');
+      } catch(e){ /* ignore */ }
+    }
+    async function openViewer(file){
       const overlay = document.getElementById('viewer-overlay');
       const body = document.getElementById('viewer-body');
       const title = document.getElementById('viewer-title');
       const dl = document.getElementById('viewer-download');
       title.textContent = file.label || 'Document Viewer';
-      dl.href = file.path; dl.download = '';
       body.innerHTML = '';
+      // clear any previous object URL
+      if (currentViewerObjectUrl){
+        URL.revokeObjectURL(currentViewerObjectUrl);
+        currentViewerObjectUrl = null;
+      }
       const src = file.path || '';
-      // Use <embed> for data URIs; otherwise iframe
+      // If it's a Google Drive link, use preview for viewing and direct download for Download
+      if (isDriveUrl(src)){
+        const id = getDriveFileId(src);
+        if (id){
+          const preview = drivePreviewUrl(id);
+          const download = driveDownloadUrl(id);
+          dl.href = download; dl.download = '';
+          body.innerHTML = '';
+          // Try to fetch the raw PDF (CORS may block). If successful, embed blob (no Drive UI).
+          try{
+            const controller = new AbortController();
+            const tid = setTimeout(()=> controller.abort(), 1500);
+            const resp = await fetch(download, {mode:'cors', signal: controller.signal});
+            clearTimeout(tid);
+            if (resp && resp.ok){
+              const blob = await resp.blob();
+              const blobUrl = URL.createObjectURL(blob);
+              if (currentViewerObjectUrl) { URL.revokeObjectURL(currentViewerObjectUrl); }
+              currentViewerObjectUrl = blobUrl;
+              dl.href = blobUrl; dl.download = (file.label ? file.label.replace(/\s+/g,'_') : 'file') + (blob.type && blob.type.includes('pdf') ? '.pdf' : '');
+              const em = document.createElement('embed'); em.type = 'application/pdf'; em.src = blobUrl; body.appendChild(em);
+              hideLoader(); overlay.style.display = 'grid'; overlay.setAttribute('aria-hidden','false');
+              return;
+            }
+          } catch(e){
+            // CORS or network blocked; fall through to proxy attempt
+          }
+
+          // Try local proxy (if running) to fetch the file and serve it with proper headers
+          try{
+            const proxyUrl = 'http://localhost:4000/proxy?url=' + encodeURIComponent(download);
+            const res2 = await fetch(proxyUrl, {mode:'cors'});
+            if (res2 && res2.ok){
+              const b = await res2.blob();
+              const blobUrl2 = URL.createObjectURL(b);
+              if (currentViewerObjectUrl) { URL.revokeObjectURL(currentViewerObjectUrl); }
+              currentViewerObjectUrl = blobUrl2;
+              dl.href = blobUrl2; dl.download = (file.label ? file.label.replace(/\s+/g,'_') : 'file') + (b.type && b.type.includes('pdf') ? '.pdf' : '');
+              const em2 = document.createElement('embed'); em2.type = 'application/pdf'; em2.src = blobUrl2; body.appendChild(em2);
+              hideLoader(); overlay.style.display = 'grid'; overlay.setAttribute('aria-hidden','false');
+              return;
+            }
+          } catch(e){
+            // proxy failed or not running
+          }
+
+          // Fallback: embed Drive preview iframe, but block the top-right external link control by overlaying an invisible blocker
+          const wrapper = document.createElement('div'); wrapper.style.position = 'relative'; wrapper.style.height = '100%';
+          const iframe = document.createElement('iframe');
+          iframe.src = preview; iframe.title = 'Document'; iframe.style.width = '100%'; iframe.style.height = '100%'; iframe.style.border = '0';
+          const blocker = document.createElement('div');
+          blocker.style.position = 'absolute'; blocker.style.top = '8px'; blocker.style.right = '8px'; blocker.style.width = '56px'; blocker.style.height = '56px'; blocker.style.zIndex = '5'; blocker.style.background = 'transparent'; blocker.style.cursor = 'default';
+          blocker.title = 'External link disabled';
+          // prevent pointer events from reaching the iframe in that top-right area
+          blocker.addEventListener('click', (e)=>{ e.stopPropagation(); e.preventDefault(); });
+          wrapper.appendChild(iframe);
+          wrapper.appendChild(blocker);
+          body.appendChild(wrapper);
+          hideLoader(); overlay.style.display = 'grid'; overlay.setAttribute('aria-hidden','false');
+          return;
+        }
+      }
+      // If it's a data URI, embed directly
       if (src.startsWith('data:application/pdf')){
+        dl.href = src; dl.download = '';
         const em = document.createElement('embed');
         em.type = 'application/pdf';
         em.src = src;
         body.appendChild(em);
-      } else {
-        const iframe = document.createElement('iframe');
-        iframe.src = src;
-        iframe.title = 'Document';
-        body.appendChild(iframe);
+        overlay.style.display = 'grid';
+        overlay.setAttribute('aria-hidden','false');
+        return;
       }
-      overlay.style.display = 'grid';
-      overlay.setAttribute('aria-hidden','false');
+
+      // Try to fetch the file and create a blob URL to avoid servers forcing download via Content-Disposition
+      showLoader();
+      try{
+        const resp = await fetch(src, {mode: 'cors'});
+        if (!resp.ok) throw new Error('Network response was not ok');
+        const blob = await resp.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        currentViewerObjectUrl = blobUrl;
+        dl.href = blobUrl; dl.download = (file.label ? file.label.replace(/\s+/g,'_') : 'file') + (blob.type && blob.type.includes('pdf') ? '.pdf' : '');
+
+        // Use <embed> for PDFs to get better rendering
+        if (blob.type && blob.type.includes('pdf')){
+          const em = document.createElement('embed');
+          em.type = 'application/pdf';
+          em.src = blobUrl;
+          body.appendChild(em);
+        } else {
+          const iframe = document.createElement('iframe');
+          iframe.src = blobUrl;
+          iframe.title = 'Document';
+          body.appendChild(iframe);
+        }
+      } catch (err){
+        // Silent fallback with automatic local proxy attempt for GitHub release assets
+        dl.href = src; dl.download = '';
+        body.innerHTML = '';
+        const lower = (src||'').toLowerCase();
+        const isGithubRelease = /github\.com\/.*\/releases\/download\//i.test(src);
+        if (isGithubRelease){
+          // Try to open via local proxy in a new tab immediately (avoid download). Open blank tab first so popup blockers don't block.
+          const proxyUrl = 'http://localhost:4000/proxy?url=' + encodeURIComponent(src);
+          const win = window.open('', '_blank');
+          try{
+            // short timeout for responsiveness
+            const controller = new AbortController();
+            const id = setTimeout(()=> controller.abort(), 1200);
+            const res = await fetch(proxyUrl, {signal: controller.signal});
+            clearTimeout(id);
+            if (res.ok){
+              // proxy reachable; navigate the tab to the proxy URL so it renders inline
+              if (win) {
+                win.location = proxyUrl;
+                return; // done
+              }
+            }
+          } catch(e){
+            // proxy not reachable; close any opened tab and fall through to fallback
+            try{ if (win) win.close(); }catch(_){}
+          }
+        }
+        // final silent attempt to embed original URL (may still trigger download)
+        if (lower.endsWith('.pdf')){
+          const em = document.createElement('embed');
+          em.type = 'application/pdf';
+          em.src = src;
+          body.appendChild(em);
+        } else {
+          const iframe = document.createElement('iframe');
+          iframe.src = src;
+          iframe.title = 'Document';
+          body.appendChild(iframe);
+        }
+      } finally {
+        hideLoader();
+        overlay.style.display = 'grid';
+        overlay.setAttribute('aria-hidden','false');
+      }
     }
     function closeViewer(){
       document.getElementById('viewer-overlay').style.display = 'none';
       document.getElementById('viewer-overlay').setAttribute('aria-hidden','true');
       document.getElementById('viewer-body').innerHTML = '';
+      if (currentViewerObjectUrl){
+        URL.revokeObjectURL(currentViewerObjectUrl);
+        currentViewerObjectUrl = null;
+      }
+    }
+
+    // Small helper modal with hosting instructions (shown when a GitHub release link is detected)
+    function showHostingModal(){
+      // prevent duplicate
+      if (document.getElementById('hosting-overlay')) return;
+      const overlay = document.createElement('div');
+      overlay.id = 'hosting-overlay';
+      overlay.style.position = 'fixed'; overlay.style.inset = '0'; overlay.style.background = 'rgba(0,0,0,0.45)'; overlay.style.display = 'grid'; overlay.style.placeItems = 'center'; overlay.style.zIndex = '3200';
+      const panel = document.createElement('div');
+      panel.style.background = 'var(--card)'; panel.style.border = '1px solid var(--border)'; panel.style.padding = '18px'; panel.style.borderRadius = '12px'; panel.style.maxWidth = '720px'; panel.style.width = 'min(92vw,720px)';
+      panel.innerHTML = `
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px;"><h3 style="margin:0">Hosting instructions</h3><button class="btn-pill" id="hosting-close">Close</button></div>
+        <ol>
+          <li>Move the PDF(s) into your repository (e.g., a <code>docs/</code> folder) and commit the changes.</li>
+          <li>Enable GitHub Pages in your repo settings (choose the <code>docs/</code> folder or <code>/ (main)</code> branch).</li>
+          <li>Your file will be available at <code>https://&lt;username&gt;.github.io/&lt;repo&gt;/&lt;path&gt;/file.pdf</code>, which will render inline in most browsers.</li>
+        </ol>
+        <p style="margin-top:10px">As an alternative, you can upload files to the repo and use the raw URL: <code>https://raw.githubusercontent.com/&lt;username&gt;/&lt;repo&gt;/&lt;branch&gt;/path/to/file.pdf</code>. GitHub Pages is the simplest way to guarantee inline viewing and proper headers.</p>
+        <div style="display:flex; justify-content:flex-end; margin-top:12px;"></div>
+      `;
+      overlay.appendChild(panel);
+      document.body.appendChild(overlay);
+      document.getElementById('hosting-close').addEventListener('click', ()=>{ document.body.removeChild(overlay); });
     }
 
     // File picker (shows choices when a card has multiple files)
@@ -497,6 +725,7 @@ We are committed to supporting your educational journey. Explore our resources, 
     function init(){
       renderGrid(DATA.fbise, 'fbise-grid');
       renderGrid(DATA.igcse, 'igcse-grid');
+      setupResponsive();
       document.getElementById('search-btn').addEventListener('click', doSearch);
       document.getElementById('search-input').addEventListener('keydown', (e)=>{ if (e.key==='Enter') doSearch(); });
       document.getElementById('search-close').addEventListener('click', closeSearch);
