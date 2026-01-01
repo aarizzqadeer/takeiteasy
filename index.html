@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Take It Easy! — Study Resources</title>
+  <meta name="description" content="Free study resources for FBISE SSC-I and Cambridge IGCSE/O Level." />
+  <!-- Favicon & theme color -->
+  <link rel="icon" href="assets/take-it-easy-logo.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#1e40af" />
+  <!--
+    Single-file build
+    -------------------------------------------------
+    • Change the color theme by editing CSS variables in :root
+    • To make it ONE FILE ONLY, you can embed PDFs using base64 data URIs
+      Example path: data:application/pdf;base64,JVBERi0xLjQKJ... (long string)
+    • Otherwise, host PDFs publicly and set their URLs in DATA below.
+  -->
+  <style>
+    /* =========================
+       Theme (Light, neutral)
+       ========================= */
+    :root {
+      --bg: #f7f7fb;
+      --card: #ffffff;
+      --accent: #1e40af;   /* indigo-800 */
+      --accent-2: #2563eb; /* blue-600 */
+      --text: #0f172a;     /* slate-900 */
+      --muted: #475569;    /* slate-600 */
+      --border: #e5e7eb;   /* gray-200 */
+      --shadow: 0 8px 22px rgba(0,0,0,.08);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; font-family: "Segoe UI", Roboto, Arial, sans-serif; background: var(--bg); color: var(--text); }
+    a { color: var(--accent-2); text-decoration: none; }
+    a:hover { color: #3b82f6; }
+
+    /* Header */
+    .header { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,.7); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+    .nav { max-width: 1100px; margin: 0 auto; display: flex; gap: 18px; align-items: center; padding: 14px; }
+    .logo { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 16px; background: var(--card); }
+    .logo svg { height: 28px; }
+    .logo span { font-weight: 600; letter-spacing: .3px; }
+    .nav-links { display: flex; gap: 10px; margin-left: auto; }
+    .btn-pill { padding: 10px 16px; border: 1px solid var(--border); border-radius: 16px; background: var(--card); color: var(--text); box-shadow: var(--shadow); }
+    .btn-pill:hover { border-color: var(--accent-2); }
+    .btn-pill.active { background: var(--accent-2); color: #fff; border-color: var(--accent-2); box-shadow: none; }
+
+    /* Loading overlay */
+    #loading-overlay { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(255,255,255,0.6); z-index: 3000; }
+    .loader { display:flex; flex-direction:column; align-items:center; gap:12px; padding:20px; border-radius:12px; background: rgba(255,255,255,0.95); box-shadow: var(--shadow); }
+    .spinner { width:46px; height:46px; border-radius:50%; border:5px solid #e6edf3; border-top-color: var(--accent-2); animation: spin 1s linear infinite; }
+    .loader-text { color: var(--muted); font-weight:600; }
+    @keyframes spin { to { transform: rotate(360deg);} }
+
+    .search { flex: 1; display: flex; gap: 10px; align-items: center; padding: 6px 10px; border: 1px solid var(--border); border-radius: 16px; background: var(--card); }
+    .search input { width: 100%; padding: 10px 12px; border: none; outline: none; color: var(--text); background: transparent; font-size: 16px; }
+    .search button { background: var(--accent-2); color: #fff; border: none; border-radius: 12px; padding: 10px 14px; font-weight: 600; }
+
+    /* Hero */
+    .hero { max-width: 1100px; margin: 24px auto; padding: 24px; border: 1px solid var(--border); border-radius: 26px; background: var(--card); box-shadow: var(--shadow); }
+    .hero h1 { margin-top: 0; font-size: 28px; }
+    .hero p { color: var(--muted); font-size: 16px; line-height: 1.6; }
+
+    /* Big Pills */
+    .pills { max-width: 1100px; margin: 12px auto 40px; display: grid; gap: 24px; }
+    .pill { padding: 28px 24px; border: 1px solid var(--border); border-radius: 26px; background: #fff; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: space-between; }
+    .pill h2 { margin: 0; }
+    .pill .actions { display: flex; gap: 12px; }
+    .pill-desc { color: var(--muted); font-size: 14px; margin-top: 8px; max-width: 68%; line-height: 1.5; }
+    .cta { background: var(--accent-2); color: #fff; padding: 12px 18px; border-radius: 14px; font-weight: 700; }
+    .cta.secondary { background: transparent; color: var(--accent-2); border: 1px dashed var(--accent-2); }
+
+    /* Containers & Grid */
+    .container { max-width: 1100px; margin: 24px auto; padding: 0 12px; }
+    .section-intro { color: var(--muted); margin-bottom: 12px; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    @media (max-width: 980px) { .grid { grid-template-columns: repeat(2, 1fr);} }
+    @media (max-width: 640px) { .grid { grid-template-columns: 1fr;} }
+    .card { border: 1px solid var(--border); border-radius: 18px; background: var(--card); box-shadow: var(--shadow); padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+    .card h3 { margin: 4px 0 0; font-size: 18px; }
+    .card .meta { color: var(--muted); font-size: 13px; }
+    .card .files { display: flex; flex-wrap: wrap; gap: 8px; }
+    .badge { padding: 6px 10px; border-radius: 12px; border: 1px solid var(--border); background: #f8fafc; color: var(--text); font-size: 12px; }
+    .actions { display: flex; gap: 10px; }
+    .action-btn { flex: 1; text-align: center; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border); background: #f8fafc; color: var(--text); }
+    .action-btn.primary { background: var(--accent-2); color: #fff; font-weight: 700; }
+    .action-btn:hover { border-color: var(--accent-2); }
+
+    /* Search overlay */
+    #search-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; place-items: center; z-index: 2000; }
+    #search-panel { width: min(920px, 92vw); max-height: 80vh; overflow: auto; background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 16px; box-shadow: var(--shadow); }
+    #search-results { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    @media (max-width: 760px){ #search-results { grid-template-columns: 1fr; } }
+
+    /* Viewer overlay */
+    #viewer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: none; place-items: center; z-index: 2100; }
+    #viewer-panel { width: min(1000px, 95vw); height: min(85vh, 800px); background: var(--card); border: 1px solid var(--border); border-radius: 14px; display: flex; flex-direction: column; }
+    #viewer-header { display:flex; align-items:center; justify-content:space-between; padding:10px; border-bottom:1px solid var(--border); }
+    #viewer-body { flex: 1; }
+    #viewer-body iframe, #viewer-body embed { width: 100%; height: 100%; border: 0; }
+
+    /* Mobile / small-device adjustments */
+    @media (max-width: 640px) {
+      .grid { grid-template-columns: 1fr; }
+      .pill { padding: 18px 16px; }
+      .action-btn { padding: 14px 12px; font-size: 16px; }
+      .btn-pill { padding: 12px 14px; font-size: 15px; }
+      /* Make overlays and panels full width on mobile */
+      #viewer-panel { width: 100vw; height: 100vh; border-radius: 0; max-width: none; max-height: none; }
+      #viewer-panel .viewer-header { position: absolute; top: 0; left: 0; right: 0; z-index: 6; padding: 12px; background: rgba(255,255,255,0.95); border-bottom: none; }
+      #viewer-body { padding-top: 64px; overflow: auto; }
+      #viewer-body iframe, #viewer-body embed { height: calc(100vh - 64px); }
+      /* Overlays take full screen and align to top */
+      #search-overlay, #file-picker-overlay, #viewer-overlay { place-items: start; align-items: start; }
+      #search-panel, #file-picker-overlay > div { width: 100%; margin: 8px; border-radius: 12px; }
+      /* Increase tap targets */
+      .action-btn, .btn-pill { min-height: 44px; }
+    }
+
+    /* Touch-specific adjustments */
+    .touch .action-btn, .touch .btn-pill { padding: 16px 18px; }
+
+    /* Small tweak for very narrow devices */
+    @media (max-width: 360px){
+      .btn-pill, .action-btn { font-size: 14px; padding: 12px; }
+    }
+
+    /* Footer */
+    .footer { border-top: 1px solid var(--border); margin-top: 40px; }
+    .footer .inner { max-width: 1100px; margin: 0 auto; padding: 20px 12px; color: var(--muted); font-size: 13px; }
+
+    /* Routing (hide/show sections) */
+    .route { display: none; }
+    .route.active { display: block; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <nav class="nav">
+      <a class="logo" href="#" data-route="home" aria-label="Homepage">
+        <img src="assets/take-it-easy-logo.svg" alt="Take it Easy! logo" style="height:36px;" loading="lazy" />
+        <span>Take It Easy!</span>
+      </a>
+      <div class="search" role="search">
+        <input id="search-input" type="search" placeholder="Search resources" aria-label="Search resources" />
+        <button id="search-btn" aria-label="Search">Search</button>
+      </div>
+      <div class="nav-links">
+        <a class="btn-pill" href="#" data-route="home">Home</a>
+        <a class="btn-pill" href="#" data-route="about">About Us</a>
+        <a class="btn-pill" href="#" data-route="fbise">FBISE Grade 9</a>
+        <a class="btn-pill" href="#" data-route="igcse">IGCSE / O Level</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Loading overlay -->
+  <div id="loading-overlay" aria-hidden="true">
+    <div class="loader" role="status" aria-live="polite">
+      <div class="spinner" aria-hidden="true"></div>
+      <div class="loader-text">Loading…</div>
+    </div>
+  </div>
+
+  <!-- Search overlay -->
+  <div id="search-overlay" aria-hidden="true">
+    <div id="search-panel">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 12px;">
+        <h2 style="margin:0">Search Results</h2>
+        <button class="btn-pill" id="search-close">Close</button>
+      </div>
+      <div id="search-results"></div>
+    </div>
+  </div>
+
+  <!-- Viewer overlay -->
+  <div id="viewer-overlay" aria-hidden="true">
+    <div id="viewer-panel">
+      <div id="viewer-header">
+        <div id="viewer-title">Document Viewer</div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <a id="viewer-download" class="btn-pill" href="#" download>Download</a>
+          <button class="btn-pill" id="viewer-close">Close</button>
+        </div>
+      </div>
+      <div id="viewer-body"></div>
+    </div>
+  </div>
+
+  <!-- File picker overlay -->
+  <div id="file-picker-overlay" aria-hidden="true" style="display:none; place-items:center; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:2150;">
+    <div style="background:var(--card); border:1px solid var(--border); padding:16px; border-radius:12px; width:min(420px, 92vw); box-shadow:var(--shadow);">
+      <h3 style="margin:0 0 8px;">Open file</h3>
+      <div id="file-picker-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:12px;"><button class="btn-pill" id="file-picker-cancel">Cancel</button></div>
+    </div>
+  </div>
+
+  <!-- Routes -->
+  <main>
+    <section id="route-home" class="route active" aria-label="Home">
+      <div class="hero">
+        <h1>All your study resources in one place</h1>
+        <p>
+          This platform is built to collect, curate, and present the textbooks, syllabuses, study guides and practical manuals students actually need — quickly and without hassle. Created to make studying easier, it focuses on core materials for FBISE (SSC-I / Grade 9) and Cambridge IGCSE/O Level exams: from official textbooks to targeted workbooks and past-paper style practice. Whether you are strengthening fundamentals in Mathematics, improving English language skills, or preparing for practical exams and lab work, you’ll find dependable resources that save time and reduce stress. The site is optimized for fast searching and quick downloads, and it’s mobile-friendly so you can study on the go. New materials are added regularly — if a file is missing locally, you can add it to the resources folder and the site will pick it up.
+        </p>
+        <div class="home-descriptions" style="margin-top:16px; display:grid; grid-template-columns:repeat(2,1fr); gap:12px;">
+          <div><strong>FBISE (SSC-I)</strong>: Pakistan’s Federal Board syllabus for Grade 9 covering core subjects like English, Urdu, Mathematics, Islamiyat and introductory science topics — ideal for building a strong foundation and preparing for school exams.</div>
+          <div><strong>IGCSE / O Level</strong>: Cambridge international syllabus with subject-focused materials (English, Mathematics, Physics, Chemistry, Computer Science) geared toward higher-secondary exam success and conceptual understanding.</div>
+        </div>
+      </div>
+      <div class="pills">
+        <article class="pill">
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <h2>FBISE Resources (SSC-I)</h2>
+          </div>
+          <div class="actions">
+            <a class="cta" href="#" data-route="fbise">Open FBISE</a>
+          </div>
+        </article>
+        <article class="pill">
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <h2>IGCSE / O Level Resources</h2>
+          </div>
+          <div class="actions">
+            <a class="cta" href="#" data-route="igcse">Open IGCSE</a>
+          </div>
+        </article>
+      </div>
+
+      <!-- Home detail blocks for each board -->
+      <div class="container" style="margin-top:20px;">
+        <div class="grid" style="grid-template-columns: 1fr 1fr; gap:18px;">
+          <div class="card">
+            <h3>FBISE </h3>
+            <p class="pill-desc">Official Grade 9 materials covering English, Urdu, Mathematics, Islamiyat, Chemistry and Physics. This section focuses on textbooks, practical manuals and subject-specific workbooks to support classroom learning and exam preparation. Click "Open FBISE" to view available files.</p>
+          </div>
+          <div class="card">
+            <h3>IGCSE / O Level </h3>
+            <p class="pill-desc">Cambridge IGCSE and O Level resources for core subjects: English , Mathematics , Physics , Chemistry  and Computer Science. Includes syllabus documents, study guides and practice workbooks to help prepare for the exams.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="route-fbise" class="route" aria-label="FBISE">
+      <div class="container">
+        <h1>FBISE — SSC-I (Grade 9)</h1>
+        <p class="section-intro">Below are the available subjects and files for FBISE Grade 9. Use the cards to view or download textbooks, practical manuals and supplementary workbooks.</p>
+        <div class="card" style="margin-bottom:12px;"><strong>What you'll find:</strong> Official textbooks, grammar guides, practical workbooks and revision materials aligned to FBISE syllabuses — focused on building a strong foundation in core subjects and preparing for school exams.</div>
+        <div id="fbise-grid" class="grid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="route-igcse" class="route" aria-label="IGCSE">
+      <div class="container">
+        <h1>Cambridge IGCSE / O Level</h1>
+        <p class="section-intro">Below are the available subjects and files for Cambridge IGCSE/O Level. Here you'll find syllabuses, study guides and targeted workbooks to support exam preparation and deepen subject knowledge.</p>
+        <div class="card" style="margin-bottom:12px;"><strong>What you'll find:</strong> Syllabus documents, study guides, practice workbooks and select textbooks covering key IGCSE topics and exam-style practice questions to help you revise efficiently.</div>
+        <div id="igcse-grid" class="grid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="route-about" class="route" aria-label="About">
+      <div class="container">
+        <h1>About Us</h1>
+        <p class="section-intro">
+Welcome to <b>Take It Easy!</b>, your one-stop destination for academic excellence. Our mission is simple: to make learning accessible, organized, and stress-free for students preparing for FBISE (SSC-I) and Cambridge IGCSE/O Level examinations. We understand the challenges students face when searching for reliable study materials, so we’ve created a platform that brings everything together in one convenient place.
+This website is designed to provide high-quality resources including textbooks, grammar guides, syllabuses, workbooks, and practical manuals. Whether you’re aiming to strengthen your basics or master advanced concepts, our resources are curated to help you succeed.
+
+<h1>Our Vision</h1>
+To empower students with easy access to authentic educational content, enabling them to learn confidently and achieve their academic goals.
+
+<h1>FBISE SSC-I Subjects Overview</h1>
+
+English: Improve your reading, writing, and comprehension skills with the official FBISE English textbook and grammar guides.
+Urdu: Master your national language with structured lessons and exercises.
+Mathematics: Build a strong foundation in algebra, geometry, and problem-solving techniques.
+Islamiyat: Understand Islamic principles, history, and values through comprehensive study material.
+Chemistry: Explore chemical reactions, equations, and practical experiments with both theory and practical books.
+Physics: Learn the laws of motion, energy, and forces with clear explanations and worked examples.
+Computer Science: Gain essential knowledge of computing concepts, programming basics, and IT fundamentals.
+
+
+<h1>IGCSE / O Level Subjects Overview</h1>
+
+English as a Second Language (0510): Enhance your language proficiency with textbooks and syllabuses tailored for Cambridge standards.
+Mathematics (0580 & 0606): Tackle core and additional mathematics with structured guides and practice workbooks.
+Physics (0625): Dive into mechanics, electricity, and waves with books, study guides, and workbooks.
+Chemistry (0620): Understand atomic structure, bonding, and chemical processes with theory and practical resources.
+Computer Science (0478): Learn programming, algorithms, and computational thinking with comprehensive guides.
+
+
+<h1>Why Choose Us?</h1>
+
+All resources in one place – No more endless searching. <br>
+Free and easy access – Download or view online anytime. <br>
+Organized structure – Navigate by subject or exam board effortlessly.<br>
+Reliable content – Official and high-quality study materials.<br>
+Student-focused design – Simple, clean, and mobile-friendly.<br>
+We are committed to supporting your educational journey. Explore our resources, study at your own pace, and take the stress out of exam preparation. Remember, with the right tools and mindset, you can achieve anything. So sit back, relax, and let us help you take it easy on your path to success!
+        </p>
+        <ul>
+          <li><strong>FBISE </strong>: English, Urdu, Math, Islamiat, Chemistry, Physics, Computer, Practical books.</li>
+          <li><strong>IGCSE</strong>: 0510 English, 0606 Add. Math, 0580 Mathematics, 0625 Physics, 0620 Chemistry, 0478 Computer Science.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="inner">
+      <p>© 2025 Take It Easy! </p>
+    </div>
+  </footer>
+
+  <script>
+    // ----------------------------------------------
+    // DATA: Edit below to add or change files
+    // Use either public URLs (https://...) or base64 Data URIs (data:application/pdf;base64,...)
+    // ----------------------------------------------
+    const DATA = {
+      fbise: [
+        { subject: "English", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1C4eBxOLaS558CvTLIMC_OFySqNoIRWqB/view" }, { label: "Grammar", path: "https://drive.google.com/file/d/1El7MQKvbbDrP3Cg_sNh7305hGy9Aumuu/view" } ] },
+        { subject: "Urdu", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1HxLnU7K03s4pMMO1zt8F6ILm98g8KKg2/view" } ] },
+        { subject: "Mathematics", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1mj2YNK3luES-iCpFsX26dVSkdTqmVxcB/view" } ] },
+        { subject: "Islamiyat", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1-qMSpSjhPdcrkWo5LbHj8u-mG1u9q6dY/view" } ] },
+        { subject: "Chemistry", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1nl3kS1kkQov4TcKZxNy9jqBhbh2o6o7M/view" }, { label: "Practical Book", path: "https://drive.google.com/file/d/1MDs4MKYWWJXY6fcTKGBO_TYmA7fNsq-i/view" } ] },
+        { subject: "Physics", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1RlOzWYw4wjAC2kbtCljfJ1jNMqC8GN4l/view" } ] },
+        { subject: "Computer", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1CoFKEvUo4C2csPytO21_IGfTDlUP2072/view" } ] }
+      ],
+      igcse: [
+        { subject: "English as a Second Language", code: "0510", files: [ { label: "Book", path: "https://drive.google.com/file/d/1urUVuCNNdzTqowJZdxAR7jDr2XC9RV2O/view" }, { label: "Syllabus", path: "https://drive.google.com/file/d/11alyYszawyE7ntFi13YBhMNfC6Gp6wzV/view" } ] },
+        { subject: "Mathematics (Additional)", code: "0606", files: [ { label: "Book", path: "https://drive.google.com/file/d/1CEo7G3Biv0DFsLZ_EaEMT4R1H5x-K6ei/view" }, { label: "Syllabus", path: "https://drive.google.com/file/d/1YyLaYSAJA19Li0Pfl8Vqv_YYrCY6caD8/view" } ] },
+        { subject: "Mathematics", code: "0580", files: [ { label: "Book", path: "https://drive.google.com/file/d/1Qdm4Mt18RKIcWIdM5khfCZwMhIaOigtg/view" }, { label: "Syllabus", path: "https://drive.google.com/file/d/1w3amzdvEt83n207Tyy0R6QgOKkTpX5-s/view" } ] },
+        { subject: "Physics", code: "0625", files: [ { label: "Book", path: "https://drive.google.com/file/d/18OsnX_8KqW8V4lJwBdYiffIHwFlhCkWj/view" }, { label: "Study Guide", path: "https://drive.google.com/file/d/1DhmcbuiMxA83vRTD375dDGGbHDGyWccC/view" }, { label: "Workbook", path: "https://drive.google.com/file/d/10lf27YNJ7ghdSH8AVR_eFFMYuD7NF-bU/view" }, { label: "Syllabus", path: "https://drive.google.com/file/d/1OVlSKcMDd-9t8VDQFLB-knlNwZEB2sFF/view" } ] },
+        { subject: "Chemistry", code: "0620", files: [ { label: "Book", path: "https://drive.google.com/file/d/1eMCjYY_X5RYv1ldPkvm443WZb_S177r4/view" }, { label: "Study Guide", path: "https://drive.google.com/file/d/1U1HjbQEk4KwzleFBqVFfmNkUonnSQjjV/view" }, { label: "Workbook", path: "https://drive.google.com/file/d/1etu4s48EiO3FE88AmdnbaU7nZlY7dEwo/view" }, { label: "Practical Workbook", path: "https://drive.google.com/file/d/10PPOBN7cNsMLnleToUBXbnmxwBzZyIcQ/view" }, { label: "Syllabus", path: "https://drive.google.com/file/d/1F_p0xbsFzHzJcncF18gRQtzmJTHXRbcm/view" } ] },
+        { subject: "Computer Science", code: "0478", files: [ { label: "Book", path: "https://drive.google.com/file/d/148YUSYQHgTQtpYanvxt7y6tlNq36H-or/view" }, { label: "Study Guide", path: "https://drive.google.com/file/d/1Tii1zydHKIKmcHdBuNymUSA7dRKTFSYy/view" }, { label: "Syllabus", path: "https://drive.google.com/file/d/1uh84BhPVgUymNLFiu_6osrxOiIRbutCM/view" } ] }
+      ]
+    };
+    function showLoader(){ const o=document.getElementById('loading-overlay'); if (!o) return; o.style.display='flex'; o.setAttribute('aria-hidden','false'); }
+    function hideLoader(){ const o=document.getElementById('loading-overlay'); if (!o) return; o.style.display='none'; o.setAttribute('aria-hidden','true'); }
+
+    function showRoute(name){
+      // show loading animation then switch route
+      showLoader();
+      setTimeout(()=>{
+        document.querySelectorAll('.route').forEach(el=> el.classList.remove('active'));
+        const id = `route-${name}`;
+        const el = document.getElementById(id);
+        if (el) el.classList.add('active');
+        // update active nav buttons
+        document.querySelectorAll('.nav-links .btn-pill').forEach(btn=> btn.classList.toggle('active', btn.getAttribute('data-route')===name));
+        // update any other elements with data-route
+        document.querySelectorAll('[data-route]').forEach(el=> { if(el.classList) el.classList.toggle('active', el.getAttribute('data-route')===name); });
+        localStorage.setItem('site:route', name);
+        window.scrollTo({top:0, behavior:'smooth'});
+        hideLoader();
+      }, 350);
+    }
+
+    // ----------------------------------------------
+    // Card builder & rendering
+    // ----------------------------------------------
+    function createCard(item){
+      const card = document.createElement('article');
+      card.className = 'card';
+      const title = document.createElement('h3');
+      title.textContent = `${item.subject}${item.code ? ' ('+item.code+')':''}`;
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+      meta.textContent = 'Files available: ' + item.files.length;
+      const files = document.createElement('div');
+      files.className = 'files';
+      item.files.forEach(f=>{
+        const b = document.createElement('span');
+        b.className = 'badge';
+        b.textContent = f.label;
+        files.appendChild(b);
+      });
+      const actions = document.createElement('div');
+      actions.className = 'actions';
+      const viewBtn = document.createElement('button');
+      viewBtn.className = 'action-btn';
+      viewBtn.textContent = 'View';
+      viewBtn.addEventListener('click', ()=> openFilePicker(item));
+      const dlBtn = document.createElement('a');
+      dlBtn.className = 'action-btn primary';
+      dlBtn.textContent = 'Download';
+      let dlHref = item.files[0]?.path || '#';
+      if (isDriveUrl(dlHref)){
+        const id = getDriveFileId(dlHref);
+        if (id) dlHref = driveDownloadUrl(id);
+      }
+      dlBtn.href = dlHref;
+      dlBtn.download = '';
+      actions.append(viewBtn, dlBtn);
+      card.append(title, meta, files, actions);
+      return card;
+    }
+
+    function renderGrid(list, mountId){
+      const mount = document.getElementById(mountId);
+      mount.innerHTML = '';
+      list.forEach(item=> mount.appendChild(createCard(item)) );
+    }
+
+    // ----------------------------------------------
+    // Search overlay
+    // ----------------------------------------------
+    function openSearch(){
+      document.getElementById('search-overlay').style.display = 'grid';
+      document.getElementById('search-overlay').setAttribute('aria-hidden','false');
+    }
+    function closeSearch(){
+      document.getElementById('search-overlay').style.display = 'none';
+      document.getElementById('search-overlay').setAttribute('aria-hidden','true');
+    }
+    function renderSearchResults(items){
+      const wrap = document.getElementById('search-results');
+      wrap.innerHTML = '';
+      items.forEach(item=> wrap.appendChild(createCard(item)) );
+      if (items.length === 0){
+        wrap.innerHTML = '<p class="section-intro">No matching resources. Try different keywords (e.g., "Physics", "0510", etc.).</p>';
+      }
+    }
+    function levenshtein(a,b){
+      a = (a||'').toLowerCase(); b = (b||'').toLowerCase();
+      const m = a.length, n = b.length; if(m===0) return n; if(n===0) return m;
+      const dp = Array.from({length:m+1}, ()=> new Array(n+1));
+      for(let i=0;i<=m;i++) dp[i][0]=i; for(let j=0;j<=n;j++) dp[0][j]=j;
+      for(let i=1;i<=m;i++){
+        for(let j=1;j<=n;j++){
+          const cost = a[i-1]===b[j-1]?0:1;
+          dp[i][j] = Math.min(dp[i-1][j]+1, dp[i][j-1]+1, dp[i-1][j-1]+cost);
+        }
+      }
+      return dp[m][n];
+    }
+
+    function doSearch(){
+      const raw = document.getElementById('search-input').value.trim();
+      const q = raw.toLowerCase();
+      if (!q){ closeSearch(); return; }
+      showLoader();
+      setTimeout(()=>{
+        const pool = [...DATA.fbise, ...DATA.igcse];
+        const results = pool.filter(item=>{
+          const s = item.subject.toLowerCase();
+          if (s.includes(q)) return true;
+          if (item.code && String(item.code).toLowerCase().includes(q)) return true;
+          if (item.files.some(f => f.label.toLowerCase().includes(q) || (f.path && f.path.toLowerCase().includes(q)))) return true;
+          // fuzzy: allow small typos
+          if (levenshtein(q, s) <= Math.max(1, Math.floor(s.length * 0.2))) return true;
+          return s.split(/\s+/).some(w => levenshtein(q,w) <= 1);
+        });
+        renderSearchResults(results); openSearch();
+        hideLoader();
+      }, 200);
+    }
+
+    // ----------------------------------------------
+    // Helpers: Google Drive URL parsing
+    // ----------------------------------------------
+    function isDriveUrl(u){
+      if(!u) return false;
+      try{ const url = new URL(u); return url.hostname.endsWith('drive.google.com') || url.hostname.endsWith('docs.google.com'); }catch(e){return false;}
+    }
+    function getDriveFileId(u){
+      try{
+        const url = new URL(u);
+        const m = url.pathname.match(/\/file\/d\/([^\/]+)/);
+        if (m) return m[1];
+        if (url.searchParams.get('id')) return url.searchParams.get('id');
+        return null;
+      } catch(e){ return null; }
+    }
+    function drivePreviewUrl(id){ return `https://drive.google.com/file/d/${id}/preview`; }
+    function driveDownloadUrl(id){ return `https://drive.google.com/uc?export=download&id=${id}`; }
+
+    // ----------------------------------------------
+    // Viewer overlay (supports URLs and base64 data URIs)
+    // ----------------------------------------------
+    let currentViewerObjectUrl = null;
+
+    // Attach load/error handlers to an element to hide loader when the document finishes loading.
+    // Falls back to hiding the loader after 2500ms to avoid indefinite loading indicators.
+    function attachLoadHandler(el){
+      try{
+        let done = false;
+        const tidy = ()=>{ if (done) return; done = true; hideLoader(); };
+        const to = setTimeout(()=> tidy(), 2500);
+        el.addEventListener('load', ()=>{ clearTimeout(to); tidy(); }, {once:true});
+        el.addEventListener('error', ()=>{ clearTimeout(to); tidy(); }, {once:true});
+      }catch(e){ hideLoader(); }
+    }
+
+    // Make layout adapt to device type (mobile/touch)
+    function setupResponsive(){
+      try{
+        const mq = window.matchMedia('(max-width:640px)');
+        function apply(){
+          document.body.classList.toggle('device-mobile', mq.matches);
+          const vp = document.getElementById('viewer-panel');
+          if (vp) vp.classList.toggle('mobile', mq.matches);
+        }
+        apply();
+        if (mq.addEventListener) mq.addEventListener('change', apply); else mq.addListener(apply);
+        if ('ontouchstart' in window) document.documentElement.classList.add('touch');
+      } catch(e){ /* ignore */ }
+    }
+    async function openViewer(file){
+      const overlay = document.getElementById('viewer-overlay');
+      const body = document.getElementById('viewer-body');
+      const title = document.getElementById('viewer-title');
+      const dl = document.getElementById('viewer-download');
+      // show viewer overlay and global loader immediately to indicate work in progress
+      showLoader();
+      overlay.style.display = 'grid';
+      overlay.setAttribute('aria-hidden','false');
+      title.textContent = file.label || 'Document Viewer';
+      body.innerHTML = '';
+      // clear any previous object URL
+      if (currentViewerObjectUrl){
+        URL.revokeObjectURL(currentViewerObjectUrl);
+        currentViewerObjectUrl = null;
+      }
+      const src = file.path || '';
+      // If it's a Google Drive link, use preview for viewing and direct download for Download
+      if (isDriveUrl(src)){
+        const id = getDriveFileId(src);
+        if (id){
+          const preview = drivePreviewUrl(id);
+          const download = driveDownloadUrl(id);
+          dl.href = download; dl.download = '';
+          body.innerHTML = '';
+          // Try to fetch the raw PDF (CORS may block). If successful, embed blob (no Drive UI).
+          try{
+            const controller = new AbortController();
+            const tid = setTimeout(()=> controller.abort(), 1500);
+            const resp = await fetch(download, {mode:'cors', signal: controller.signal});
+            clearTimeout(tid);
+            if (resp && resp.ok){
+              const blob = await resp.blob();
+              const blobUrl = URL.createObjectURL(blob);
+              if (currentViewerObjectUrl) { URL.revokeObjectURL(currentViewerObjectUrl); }
+              currentViewerObjectUrl = blobUrl;
+              dl.href = blobUrl; dl.download = (file.label ? file.label.replace(/\s+/g,'_') : 'file') + (blob.type && blob.type.includes('pdf') ? '.pdf' : '');
+              const em = document.createElement('embed'); em.type = 'application/pdf'; em.src = blobUrl; body.appendChild(em);
+              attachLoadHandler(em);
+              return;
+            }
+          } catch(e){
+            // CORS or network blocked; fall through to proxy attempt
+          }
+
+          // Try local proxy (if running) to fetch the file and serve it with proper headers
+          try{
+            const proxyUrl = 'http://localhost:4000/proxy?url=' + encodeURIComponent(download);
+            const res2 = await fetch(proxyUrl, {mode:'cors'});
+            if (res2 && res2.ok){
+              const b = await res2.blob();
+              const blobUrl2 = URL.createObjectURL(b);
+              if (currentViewerObjectUrl) { URL.revokeObjectURL(currentViewerObjectUrl); }
+              currentViewerObjectUrl = blobUrl2;
+              dl.href = blobUrl2; dl.download = (file.label ? file.label.replace(/\s+/g,'_') : 'file') + (b.type && b.type.includes('pdf') ? '.pdf' : '');
+              const em2 = document.createElement('embed'); em2.type = 'application/pdf'; em2.src = blobUrl2; body.appendChild(em2);
+              attachLoadHandler(em2);
+              return;
+            }
+          } catch(e){
+            // proxy failed or not running
+          }
+
+          // Fallback: embed Drive preview iframe, but block the top-right external link control by overlaying an invisible blocker
+          const wrapper = document.createElement('div'); wrapper.style.position = 'relative'; wrapper.style.height = '100%';
+          const iframe = document.createElement('iframe');
+          iframe.src = preview; iframe.title = 'Document'; iframe.style.width = '100%'; iframe.style.height = '100%'; iframe.style.border = '0';
+          const blocker = document.createElement('div');
+          blocker.style.position = 'absolute'; blocker.style.top = '8px'; blocker.style.right = '8px'; blocker.style.width = '56px'; blocker.style.height = '56px'; blocker.style.zIndex = '5'; blocker.style.background = 'transparent'; blocker.style.cursor = 'default';
+          blocker.title = 'External link disabled';
+          // prevent pointer events from reaching the iframe in that top-right area
+          blocker.addEventListener('click', (e)=>{ e.stopPropagation(); e.preventDefault(); });
+          wrapper.appendChild(iframe);
+          wrapper.appendChild(blocker);
+          body.appendChild(wrapper);
+          attachLoadHandler(iframe);
+          return;
+        }
+      }
+      // If it's a data URI, embed directly
+      if (src.startsWith('data:application/pdf')){
+        dl.href = src; dl.download = '';
+        const em = document.createElement('embed');
+        em.type = 'application/pdf';
+        em.src = src;
+        body.appendChild(em);
+        attachLoadHandler(em);
+        return;
+      }
+
+      // Try to fetch the file and create a blob URL to avoid servers forcing download via Content-Disposition
+      showLoader();
+      try{
+        const resp = await fetch(src, {mode: 'cors'});
+        if (!resp.ok) throw new Error('Network response was not ok');
+        const blob = await resp.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        currentViewerObjectUrl = blobUrl;
+        dl.href = blobUrl; dl.download = (file.label ? file.label.replace(/\s+/g,'_') : 'file') + (blob.type && blob.type.includes('pdf') ? '.pdf' : '');
+
+        // Use <embed> for PDFs to get better rendering
+        if (blob.type && blob.type.includes('pdf')){
+          const em = document.createElement('embed');
+          em.type = 'application/pdf';
+          em.src = blobUrl;
+          body.appendChild(em);
+          attachLoadHandler(em);
+        } else {
+          const iframe = document.createElement('iframe');
+          iframe.src = blobUrl;
+          iframe.title = 'Document';
+          body.appendChild(iframe);
+          attachLoadHandler(iframe);
+        }
+      } catch (err){
+        // Silent fallback with automatic local proxy attempt for GitHub release assets
+        dl.href = src; dl.download = '';
+        body.innerHTML = '';
+        const lower = (src||'').toLowerCase();
+        const isGithubRelease = /github\.com\/.*\/releases\/download\//i.test(src);
+        if (isGithubRelease){
+          // Try to open via local proxy in a new tab immediately (avoid download). Open blank tab first so popup blockers don't block.
+          const proxyUrl = 'http://localhost:4000/proxy?url=' + encodeURIComponent(src);
+          const win = window.open('', '_blank');
+          try{
+            // short timeout for responsiveness
+            const controller = new AbortController();
+            const id = setTimeout(()=> controller.abort(), 1200);
+            const res = await fetch(proxyUrl, {signal: controller.signal});
+            clearTimeout(id);
+            if (res.ok){
+              // proxy reachable; navigate the tab to the proxy URL so it renders inline
+              if (win) {
+                win.location = proxyUrl;
+                // close viewer overlay and loader; content will show in the new tab
+                hideLoader();
+                overlay.style.display = 'none';
+                overlay.setAttribute('aria-hidden','true');
+                return; // done
+              }
+            }
+          } catch(e){
+            // proxy not reachable; close any opened tab and fall through to fallback
+            try{ if (win) win.close(); }catch(_){}
+          }
+        }
+        // final silent attempt to embed original URL (may still trigger download)
+        if (lower.endsWith('.pdf')){
+          const em = document.createElement('embed');
+          em.type = 'application/pdf';
+          em.src = src;
+          body.appendChild(em);
+          attachLoadHandler(em);
+        } else {
+          const iframe = document.createElement('iframe');
+          iframe.src = src;
+          iframe.title = 'Document';
+          body.appendChild(iframe);
+          attachLoadHandler(iframe);
+        }
+      } finally {
+        overlay.style.display = 'grid';
+        overlay.setAttribute('aria-hidden','false');
+      }
+    }
+    function closeViewer(){
+      // ensure loader is hidden and viewer cleaned up
+      hideLoader();
+      document.getElementById('viewer-overlay').style.display = 'none';
+      document.getElementById('viewer-overlay').setAttribute('aria-hidden','true');
+      document.getElementById('viewer-body').innerHTML = '';
+      if (currentViewerObjectUrl){
+        URL.revokeObjectURL(currentViewerObjectUrl);
+        currentViewerObjectUrl = null;
+      }
+    }
+
+    // Small helper modal with hosting instructions (shown when a GitHub release link is detected)
+    function showHostingModal(){
+      // prevent duplicate
+      if (document.getElementById('hosting-overlay')) return;
+      const overlay = document.createElement('div');
+      overlay.id = 'hosting-overlay';
+      overlay.style.position = 'fixed'; overlay.style.inset = '0'; overlay.style.background = 'rgba(0,0,0,0.45)'; overlay.style.display = 'grid'; overlay.style.placeItems = 'center'; overlay.style.zIndex = '3200';
+      const panel = document.createElement('div');
+      panel.style.background = 'var(--card)'; panel.style.border = '1px solid var(--border)'; panel.style.padding = '18px'; panel.style.borderRadius = '12px'; panel.style.maxWidth = '720px'; panel.style.width = 'min(92vw,720px)';
+      panel.innerHTML = `
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px;"><h3 style="margin:0">Hosting instructions</h3><button class="btn-pill" id="hosting-close">Close</button></div>
+        <ol>
+          <li>Move the PDF(s) into your repository (e.g., a <code>docs/</code> folder) and commit the changes.</li>
+          <li>Enable GitHub Pages in your repo settings (choose the <code>docs/</code> folder or <code>/ (main)</code> branch).</li>
+          <li>Your file will be available at <code>https://&lt;username&gt;.github.io/&lt;repo&gt;/&lt;path&gt;/file.pdf</code>, which will render inline in most browsers.</li>
+        </ol>
+        <p style="margin-top:10px">As an alternative, you can upload files to the repo and use the raw URL: <code>https://raw.githubusercontent.com/&lt;username&gt;/&lt;repo&gt;/&lt;branch&gt;/path/to/file.pdf</code>. GitHub Pages is the simplest way to guarantee inline viewing and proper headers.</p>
+        <div style="display:flex; justify-content:flex-end; margin-top:12px;"></div>
+      `;
+      overlay.appendChild(panel);
+      document.body.appendChild(overlay);
+      document.getElementById('hosting-close').addEventListener('click', ()=>{ document.body.removeChild(overlay); });
+    }
+
+    // File picker (shows choices when a card has multiple files)
+    function openFilePicker(item){
+      if (!item || !item.files) return;
+      if (item.files.length === 1){ openViewer(item.files[0]); return; }
+      const overlay = document.getElementById('file-picker-overlay');
+      const list = document.getElementById('file-picker-list');
+      list.innerHTML = '';
+      item.files.forEach(f=>{
+        const b = document.createElement('button');
+        b.className = 'action-btn';
+        b.textContent = f.label || (f.path || 'File');
+        b.addEventListener('click', ()=>{
+          closeFilePicker();
+          openViewer(f);
+        });
+        const row = document.createElement('div');
+        row.appendChild(b);
+        list.appendChild(row);
+      });
+      overlay.style.display = 'grid';
+      overlay.setAttribute('aria-hidden','false');
+    }
+    function closeFilePicker(){
+      const overlay = document.getElementById('file-picker-overlay');
+      if (!overlay) return;
+      overlay.style.display = 'none';
+      overlay.setAttribute('aria-hidden','true');
+      document.getElementById('file-picker-list').innerHTML = '';
+    }
+
+    // ----------------------------------------------
+    // Init
+    // ----------------------------------------------
+    function init(){
+      renderGrid(DATA.fbise, 'fbise-grid');
+      renderGrid(DATA.igcse, 'igcse-grid');
+      setupResponsive();
+      document.getElementById('search-btn').addEventListener('click', doSearch);
+      document.getElementById('search-input').addEventListener('keydown', (e)=>{ if (e.key==='Enter') doSearch(); });
+      document.getElementById('search-close').addEventListener('click', closeSearch);
+      document.getElementById('viewer-close').addEventListener('click', closeViewer);
+      // file picker cancel/overlay close
+      document.getElementById('file-picker-cancel')?.addEventListener('click', closeFilePicker);
+      document.getElementById('file-picker-overlay')?.addEventListener('click', (e)=>{ if (e.target && e.target.id === 'file-picker-overlay') closeFilePicker(); });
+      document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') closeFilePicker(); });
+      // attach route handlers (single place)
+      document.querySelectorAll('[data-route]').forEach(a=>{
+        a.addEventListener('click', (e)=>{ e.preventDefault(); const r = a.getAttribute('data-route'); showRoute(r); });
+      });
+      // start with persisted route (or home)
+      showLoader();
+      const route = localStorage.getItem('site:route') || 'home';
+      setTimeout(()=>{ showRoute(route); }, 250);
+    }
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
