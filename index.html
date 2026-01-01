@@ -486,6 +486,18 @@ We are committed to supporting your educational journey. Explore our resources, 
     // ----------------------------------------------
     let currentViewerObjectUrl = null;
 
+    // Attach load/error handlers to an element to hide loader when the document finishes loading.
+    // Falls back to hiding the loader after 2500ms to avoid indefinite loading indicators.
+    function attachLoadHandler(el){
+      try{
+        let done = false;
+        const tidy = ()=>{ if (done) return; done = true; hideLoader(); };
+        const to = setTimeout(()=> tidy(), 2500);
+        el.addEventListener('load', ()=>{ clearTimeout(to); tidy(); }, {once:true});
+        el.addEventListener('error', ()=>{ clearTimeout(to); tidy(); }, {once:true});
+      }catch(e){ hideLoader(); }
+    }
+
     // Make layout adapt to device type (mobile/touch)
     function setupResponsive(){
       try{
@@ -505,6 +517,10 @@ We are committed to supporting your educational journey. Explore our resources, 
       const body = document.getElementById('viewer-body');
       const title = document.getElementById('viewer-title');
       const dl = document.getElementById('viewer-download');
+      // show viewer overlay and global loader immediately to indicate work in progress
+      showLoader();
+      overlay.style.display = 'grid';
+      overlay.setAttribute('aria-hidden','false');
       title.textContent = file.label || 'Document Viewer';
       body.innerHTML = '';
       // clear any previous object URL
@@ -534,7 +550,7 @@ We are committed to supporting your educational journey. Explore our resources, 
               currentViewerObjectUrl = blobUrl;
               dl.href = blobUrl; dl.download = (file.label ? file.label.replace(/\s+/g,'_') : 'file') + (blob.type && blob.type.includes('pdf') ? '.pdf' : '');
               const em = document.createElement('embed'); em.type = 'application/pdf'; em.src = blobUrl; body.appendChild(em);
-              hideLoader(); overlay.style.display = 'grid'; overlay.setAttribute('aria-hidden','false');
+              attachLoadHandler(em);
               return;
             }
           } catch(e){
@@ -552,7 +568,7 @@ We are committed to supporting your educational journey. Explore our resources, 
               currentViewerObjectUrl = blobUrl2;
               dl.href = blobUrl2; dl.download = (file.label ? file.label.replace(/\s+/g,'_') : 'file') + (b.type && b.type.includes('pdf') ? '.pdf' : '');
               const em2 = document.createElement('embed'); em2.type = 'application/pdf'; em2.src = blobUrl2; body.appendChild(em2);
-              hideLoader(); overlay.style.display = 'grid'; overlay.setAttribute('aria-hidden','false');
+              attachLoadHandler(em2);
               return;
             }
           } catch(e){
@@ -571,7 +587,7 @@ We are committed to supporting your educational journey. Explore our resources, 
           wrapper.appendChild(iframe);
           wrapper.appendChild(blocker);
           body.appendChild(wrapper);
-          hideLoader(); overlay.style.display = 'grid'; overlay.setAttribute('aria-hidden','false');
+          attachLoadHandler(iframe);
           return;
         }
       }
@@ -582,8 +598,7 @@ We are committed to supporting your educational journey. Explore our resources, 
         em.type = 'application/pdf';
         em.src = src;
         body.appendChild(em);
-        overlay.style.display = 'grid';
-        overlay.setAttribute('aria-hidden','false');
+        attachLoadHandler(em);
         return;
       }
 
@@ -603,11 +618,13 @@ We are committed to supporting your educational journey. Explore our resources, 
           em.type = 'application/pdf';
           em.src = blobUrl;
           body.appendChild(em);
+          attachLoadHandler(em);
         } else {
           const iframe = document.createElement('iframe');
           iframe.src = blobUrl;
           iframe.title = 'Document';
           body.appendChild(iframe);
+          attachLoadHandler(iframe);
         }
       } catch (err){
         // Silent fallback with automatic local proxy attempt for GitHub release assets
@@ -629,6 +646,10 @@ We are committed to supporting your educational journey. Explore our resources, 
               // proxy reachable; navigate the tab to the proxy URL so it renders inline
               if (win) {
                 win.location = proxyUrl;
+                // close viewer overlay and loader; content will show in the new tab
+                hideLoader();
+                overlay.style.display = 'none';
+                overlay.setAttribute('aria-hidden','true');
                 return; // done
               }
             }
@@ -643,19 +664,22 @@ We are committed to supporting your educational journey. Explore our resources, 
           em.type = 'application/pdf';
           em.src = src;
           body.appendChild(em);
+          attachLoadHandler(em);
         } else {
           const iframe = document.createElement('iframe');
           iframe.src = src;
           iframe.title = 'Document';
           body.appendChild(iframe);
+          attachLoadHandler(iframe);
         }
       } finally {
-        hideLoader();
         overlay.style.display = 'grid';
         overlay.setAttribute('aria-hidden','false');
       }
     }
     function closeViewer(){
+      // ensure loader is hidden and viewer cleaned up
+      hideLoader();
       document.getElementById('viewer-overlay').style.display = 'none';
       document.getElementById('viewer-overlay').setAttribute('aria-hidden','true');
       document.getElementById('viewer-body').innerHTML = '';
