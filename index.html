@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Take It Easy! — Study Resources</title>
   <meta name="description" content="Free study resources for FBISE SSC-I and Cambridge IGCSE/O Level." />
-  <!-- Favicon & theme color (emoji SVG saved in Camera Roll) -->
   <link rel="icon" href="assets/take-it-easy-emoji.svg" type="image/svg+xml" />
   <link rel="shortcut icon" href="assets/take-it-easy-emoji.svg" />
   <meta name="theme-color" content="#1e40af" />
@@ -62,9 +61,8 @@
       .nav-links .btn-pill { width: 100%; display:block; }
     }
 
-    /* Fluid grid so cards automatically fit and reflow with zoom/device size */
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
-    /* Ensure each card aligns to the top of its grid cell so different heights don't misalign rows */
+   
     .grid .card { align-self: start; }
     @media (max-width: 980px) { .grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); } }
     @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
