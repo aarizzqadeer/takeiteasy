@@ -6,21 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Take It Easy! — Study Resources</title>
   <meta name="description" content="Free study resources for FBISE SSC-I and Cambridge IGCSE/O Level." />
-  <!-- Favicon & theme color -->
-  <link rel="icon" href="assets/take-it-easy-logo.svg" type="image/svg+xml" />
+  <!-- Favicon & theme color (emoji SVG saved in Camera Roll) -->
+  <link rel="icon" href="assets/take-it-easy-emoji.svg" type="image/svg+xml" />
+  <link rel="shortcut icon" href="assets/take-it-easy-emoji.svg" />
   <meta name="theme-color" content="#1e40af" />
-  <!--
-    Single-file build
-    -------------------------------------------------
-    • Change the color theme by editing CSS variables in :root
-    • To make it ONE FILE ONLY, you can embed PDFs using base64 data URIs
-      Example path: data:application/pdf;base64,JVBERi0xLjQKJ... (long string)
-    • Otherwise, host PDFs publicly and set their URLs in DATA below.
-  -->
+  
   <style>
-    /* =========================
-       Theme (Light, neutral)
-       ========================= */
+    
     :root {
       --bg: #f7f7fb;
       --card: #ffffff;
@@ -30,6 +22,20 @@
       --muted: #475569;    /* slate-600 */
       --border: #e5e7eb;   /* gray-200 */
       --shadow: 0 8px 22px rgba(0,0,0,.08);
+      /* colors for light-background elements (badges, small pills). These allow us to keep a light background while using a dark text color in dark mode */
+      --badge-bg: #f8fafc;
+      --on-light: #0f172a;
+    }
+    /* Dark theme variables (toggled via `.dark-theme` on <html>) */
+    .dark-theme {
+      --bg: #0b1220;
+      --card: #081225;
+      --accent: #60a5fa;
+      --accent-2: #3b82f6;
+      --text: #e6eef8;
+      --muted: #9aa9bf;
+      --border: #172033;
+      --shadow: 0 8px 28px rgba(0,0,0,.6);
     }
     * { box-sizing: border-box; }
     html, body { height: 100%; }
@@ -41,11 +47,35 @@
     .header { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,.7); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
     .nav { max-width: 1100px; margin: 0 auto; display: flex; gap: 18px; align-items: center; padding: 14px; }
     .logo { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 16px; background: var(--card); }
-    .logo svg { height: 28px; }
+    .logo-svg { width:36px; height:36px; display:block; }
     .logo span { font-weight: 600; letter-spacing: .3px; }
     .nav-links { display: flex; gap: 10px; margin-left: auto; }
-    .btn-pill { padding: 10px 16px; border: 1px solid var(--border); border-radius: 16px; background: var(--card); color: var(--text); box-shadow: var(--shadow); }
-    .btn-pill:hover { border-color: var(--accent-2); }
+
+    /* Responsive navigation: small screens collapse nav-links into a toggleable panel */
+    #nav-toggle { display: none; align-items: center; justify-content: center; }
+    @media (max-width: 760px){
+      .nav { flex-wrap: wrap; padding: 10px; gap: 8px; }
+      #nav-toggle { display: inline-flex; margin-left: 6px; }
+      .search { order: 3; width: 100%; margin-top: 8px; }
+      .nav-links { position: absolute; top: 64px; right: 12px; display: none; flex-direction: column; gap: 8px; background: var(--card); border: 1px solid var(--border); padding: 12px; border-radius: 12px; width: calc(100% - 28px); max-width: 320px; box-shadow: var(--shadow); z-index: 1200; }
+      .nav-links.open { display: flex; }
+      .nav-links .btn-pill { width: 100%; display:block; }
+    }
+
+    /* Fluid grid so cards automatically fit and reflow with zoom/device size */
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    /* Ensure each card aligns to the top of its grid cell so different heights don't misalign rows */
+    .grid .card { align-self: start; }
+    @media (max-width: 980px) { .grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); } }
+    @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+    /* Button-style nav tabs (less rounded, rectangular look) */
+    .btn-pill { padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); color: var(--text); box-shadow: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; font-family: inherit; font-size: 14px; line-height: 1.1; cursor: pointer; transition: background 160ms ease, border-color 160ms ease, transform 120ms ease; }
+    .btn-pill:hover { border-color: var(--accent-2); transform: translateY(-1px); }
+    .btn-pill.red { background: #ef4444; color: #fff; border-color: transparent; font-weight:600; }
+    .btn-pill.red:hover { filter:brightness(0.95); }
+    /* Success variant for pill buttons (used for primary actions like Create account / Sign in) */
+    .btn-pill.success { background: #10b981; color: #fff; border-color: transparent; font-weight:700; }
+    .btn-pill.success:hover { filter:brightness(0.95); }
     .btn-pill.active { background: var(--accent-2); color: #fff; border-color: var(--accent-2); box-shadow: none; }
 
     /* Loading overlay */
@@ -66,7 +96,7 @@
 
     /* Big Pills */
     .pills { max-width: 1100px; margin: 12px auto 40px; display: grid; gap: 24px; }
-    .pill { padding: 28px 24px; border: 1px solid var(--border); border-radius: 26px; background: #fff; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: space-between; }
+    .pill { padding: 28px 24px; border: 1px solid var(--border); border-radius: 26px; background: var(--card); box-shadow: var(--shadow); display: flex; align-items: center; justify-content: space-between; }
     .pill h2 { margin: 0; }
     .pill .actions { display: flex; gap: 12px; }
     .pill-desc { color: var(--muted); font-size: 14px; margin-top: 8px; max-width: 68%; line-height: 1.5; }
@@ -76,18 +106,70 @@
     /* Containers & Grid */
     .container { max-width: 1100px; margin: 24px auto; padding: 0 12px; }
     .section-intro { color: var(--muted); margin-bottom: 12px; }
-    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    @media (max-width: 980px) { .grid { grid-template-columns: repeat(2, 1fr);} }
-    @media (max-width: 640px) { .grid { grid-template-columns: 1fr;} }
+    /* legacy fixed column grid removed — using a fluid auto-fit grid defined above for better responsiveness */
+
     .card { border: 1px solid var(--border); border-radius: 18px; background: var(--card); box-shadow: var(--shadow); padding: 16px; display: flex; flex-direction: column; gap: 12px; }
     .card h3 { margin: 4px 0 0; font-size: 18px; }
     .card .meta { color: var(--muted); font-size: 13px; }
-    .card .files { display: flex; flex-wrap: wrap; gap: 8px; }
-    .badge { padding: 6px 10px; border-radius: 12px; border: 1px solid var(--border); background: #f8fafc; color: var(--text); font-size: 12px; }
+    /* files: grid layout to reliably avoid overlaps */
+    /* Default: two columns so short lists like [Book, Syllabus] remain horizontal */
+    .card .files { display: grid; grid-template-columns: repeat(2, minmax(90px, 1fr)); gap: 8px; align-items: center; }
+    .card .files .badge { display: inline-flex; align-items: center; justify-content: center; padding: 6px 10px; border-radius: 12px; border: 1px solid var(--border); background: var(--badge-bg); color: var(--text); font-size: 12px; white-space: nowrap; min-width: 0; }
+
+    /* Small screens: keep two badges side-by-side when possible */
+    @media (max-width: 640px) {
+      .card { padding: 12px; }
+      .card .files { grid-template-columns: repeat(2, minmax(80px, 1fr)); align-items: center; }
+      .card .files .badge { width: auto; white-space: nowrap; justify-content: center; padding-left: 6px; padding-right: 6px; }
+      /* Keep action buttons stacked for easy touch targets */
+      .actions { flex-direction: column; gap: 8px; }
+      .action-btn { width: 100%; display: block; }
+    }
+    /* Extra small screens: stack badges single column for narrow UIs */
+    @media (max-width: 420px) {
+      .card .files { grid-template-columns: 1fr; }
+      .card h3 { font-size: 16px; }
+      .card .meta { font-size: 12px; }
+      .card { padding: 10px; }
+    }
+
     .actions { display: flex; gap: 10px; }
     .action-btn { flex: 1; text-align: center; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border); background: #f8fafc; color: var(--text); }
     .action-btn.primary { background: var(--accent-2); color: #fff; font-weight: 700; }
+    /* Success variant for View */
+    .action-btn.success { background: #10b981; color: #fff; font-weight: 700; border-color: transparent; }
     .action-btn:hover { border-color: var(--accent-2); }
+    /* Disabled state for actions (no past papers available) */
+    .action-btn.disabled, .action-btn.primary.disabled, .action-btn.success.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; background: #f3f4f6; color: #94a3b8; border-color: var(--border); }
+    a.action-btn.disabled { text-decoration: none; }
+
+    /* Year badges (Past Papers) */
+    .year-row { display:flex; flex-wrap:wrap; gap:8px 8px; align-items:center; margin-top:8px; }
+    .year-row .year-badge { flex: 0 0 auto; box-sizing: border-box; }
+    .year-badge { padding:6px 10px; border-radius:10px; border:1px solid var(--border); background:#f8fafc; color:var(--text); font-weight:700; cursor:pointer; }
+    .year-badge:hover { border-color: var(--accent-2); color:var(--accent-2); }
+    .year-badge.disabled { opacity:0.45; cursor:not-allowed; color:#94a3b8; border-style:dashed; background:transparent; }
+    .year-badge.small { padding:4px 8px; font-weight:600; }
+    .inline-note { color: #dc2626; font-size: 12px; margin-top:6px; }
+
+    /* File picker: show file choices inline (wrap when needed) so small lists stay horizontal */
+    #file-picker-overlay { place-items: center; }
+    #file-picker-list { display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:flex-start; }
+    #file-picker-list > div { display:inline-block; }
+    /* Standardize font and sizing for picker items (applies to View and Download pickers) */
+    #file-picker-list .action-btn { width: auto; display: inline-flex; align-items: center; justify-content: center; text-align: center; padding: 10px 14px; border-radius: 10px; font-size: 15px; font-weight: 600; font-family: inherit; line-height: 1.1; min-width: 120px; }
+    /* utility for explicitly full-width items (used rarely) */
+    #file-picker-list .action-btn.full-width { width: 100%; display: block; text-align: left; }
+    #file-picker-list .action-btn.disabled { opacity: 0.5; pointer-events: none; }
+    @media (max-width: 480px){
+      #file-picker-list { justify-content: center; }
+      #file-picker-list .action-btn { min-width: calc(50% - 12px); }
+      #file-picker-list .action-btn.full-width { width: 100%; }
+    }
+
+    /* Auth UI removed: site is public (no sign-up / sign-in) */
+
+
 
     /* Search overlay */
     #search-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; place-items: center; z-index: 2000; }
@@ -132,87 +214,138 @@
     .footer { border-top: 1px solid var(--border); margin-top: 40px; }
     .footer .inner { max-width: 1100px; margin: 0 auto; padding: 20px 12px; color: var(--muted); font-size: 13px; }
 
+    /* Disable text selection site-wide except interactive form controls (search input, buttons) */
+    html, body, main, .hero, .pills, .container, .card, .footer, .nav, .route {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    input, textarea, select, button, a, .search, .search input, .logo { user-select: text !important; -webkit-user-select: text !important; }
+
+    /* Left sidebar: small icon + expandable menu */
+    .left-sidebar { position: fixed; left: 12px; top: 50%; transform: translateY(-50%); z-index: 1500; display:flex; align-items:center; gap:8px; }
+    #sidebar-toggle { width:44px; height:44px; border-radius:50%; border:1px solid var(--border); background: var(--card); display:flex; align-items:center; justify-content:center; box-shadow: var(--shadow); cursor:pointer; padding:6px; }
+    .sidebar-menu { display:flex; flex-direction:column; gap:8px; margin-left:6px; background: transparent; padding:8px; border-radius:12px; transition: transform 180ms ease, opacity 180ms ease; transform-origin: left center; transform: translateX(-8px) scale(.96); opacity: 0; pointer-events: none; }
+
+    /* Theme toggle (fixed bottom-right) */
+    #theme-toggle { position: fixed; right: 16px; bottom: 16px; width:44px; height:44px; border-radius:50%; border:1px solid var(--border); background:var(--card); display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow); cursor:pointer; z-index:1600; transition: transform 160ms ease, background 160ms ease, color 160ms ease; }
+    #theme-toggle svg { width:20px; height:20px; }
+    #theme-toggle:hover { transform: translateY(-3px) scale(1.02); }
+    #theme-toggle[aria-pressed="true"] { background: var(--accent-2); color: #fff; }
+    /* Smooth background/text transitions */
+    body { transition: background 260ms ease, color 260ms ease; }
+    .sidebar-menu.open { transform: translateX(0) scale(1); opacity: 1; pointer-events: auto; background: rgba(255,255,255,0.98); border:1px solid var(--border); padding:8px; box-shadow: var(--shadow); }
+    .sidebar-menu a { display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:10px; color:var(--text); background:transparent; border:1px solid transparent; text-decoration:none; position: relative; }
+    .sidebar-menu a:hover { background: #f1f5f9; border-color: var(--border); }
+
+    /* Badge placement: show badge outside buttons (bottom-right) */
+    .nav-item { position: relative; display:flex; align-items:center; height:100%; margin-left: 8px; }
+    .nav-item .btn-pill { display:inline-flex; align-items:center; }
+    .sidebar-item { position: relative; padding: 2px; border-radius:8px; }
+
+    /* Lower the nav badge slightly so it doesn't overlap the button */
+    .nav-item .nav-badge { position: absolute; right: -6px; bottom: -14px; background: #fff; color: #dc2626; border: 1px solid var(--border); padding: 4px 8px; font-size: 11px; font-weight: 700; border-radius: 8px; box-shadow: var(--shadow); transform: translateY(12px); }
+    .sidebar-item .new-badge { position: absolute; right: -8px; bottom: -8px; background: #fff; color: #dc2626; border: 1px solid var(--border); padding: 3px 6px; font-size: 11px; font-weight: 700; border-radius: 8px; box-shadow: var(--shadow); }
+    /* Sidebar inline badge: red bordered pill (appears inside the menu list) */
+    .sidebar-menu a .new-badge { display:inline-block; border: 1px solid #dc2626; color: #dc2626; background: transparent; padding: 3px 8px; font-size: 12px; font-weight: 700; border-radius: 8px; box-shadow: none; margin-left: 10px; }
+    /* animated flame badge */
+    @keyframes floatBadge { 0% { transform: translateY(0) scale(1); } 40% { transform: translateY(-3px) scale(1.06); } 60% { transform: translateY(-1px) scale(1.03); } 100% { transform: translateY(0) scale(1); } }
+    .nav-badge, .new-badge { animation: floatBadge 1.6s ease-in-out infinite; transform-origin: center; }
+
+    /* Dark-mode readability for intentionally light-background elements:
+       Keep these elements light but ensure their text is dark in dark mode for contrast. */
+    .dark-theme {
+      --badge-bg: #ffffff;
+      --on-light: #0f172a;
+    }
+    .dark-theme .card .files .badge,
+    .dark-theme .year-badge,
+    .dark-theme #file-picker-list .action-btn:not(.primary):not(.success),
+    .dark-theme .btn-pill:not(.red) {
+      background: var(--badge-bg) !important;
+      color: var(--on-light) !important;
+      border-color: #e6eef8 !important;
+    }
+    /* Ensure the active nav pill remains blue in dark mode (override the light-badge rule) */
+    .dark-theme .btn-pill.active {
+      background: var(--accent-2) !important;
+      color: #fff !important;
+      border-color: var(--accent-2) !important;
+      box-shadow: none !important;
+    }
+    /* keep the 'new' and nav badges using the red accent so the badge meaning remains clear */
+    .dark-theme .nav-item .nav-badge,
+    .dark-theme .sidebar-item .new-badge {
+      background: var(--badge-bg) !important;
+      color: #dc2626 !important;
+      border-color: #e6eef8 !important;
+    }
+
+    /* Sidebar in dark mode: keep the menu visually light while using dark (black) text so items are readable on the white menu background */
+    .dark-theme #sidebar-toggle { color: #fff; }
+    .dark-theme .sidebar-menu { background: var(--badge-bg) !important; color: var(--on-light) !important; border-color: #e6eef8 !important; }
+    .dark-theme .sidebar-menu a { color: var(--on-light) !important; }
+    .dark-theme .sidebar-menu a:hover { background: #f3f4f6 !important; color: var(--on-light) !important; }
+
+    /* slightly darken the header in dark mode so light header doesn't wash out light text */
+    .dark-theme .header { background: rgba(6,10,16,0.58); border-bottom-color: rgba(255,255,255,0.04); }
+
+    @media (max-width:760px) { .left-sidebar { left: 8px; } }
+
     /* Routing (hide/show sections) */
     .route { display: none; }
     .route.active { display: block; }
+    /* Hide right-side auth area entirely (profile shown on the left after sign-in) */
+    #auth-area { display: none !important; }
   </style>
+  <!-- EmailJS SDK (loaded for direct-send email support) -->
+  <!-- Prefer local EmailJS SDK when testing from file:// (if present); otherwise use the official modern CDN -->
+  <script src="email.min.js"></script>
+  <!-- CDN fallback in case local copy is missing (dynamic loader will also attempt it) -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser/dist/email.min.js"></script>
 </head>
 <body>
-   <h1>🚧 TakeItEasy! Is Currently Under Construction 🚧</h1>
-
-    <p>
-        TakeItEasy! is getting a major upgrade. While the core collection of FBISE SSC‑I and IGCSE books, workbooks,
-        and syllabi remains safely in place, the website is now undergoing a full expansion to bring you a richer,
-        more complete learning experience. This temporary page is here while new features, new resources, and new
-        student‑friendly tools are being prepared behind the scenes.
-    </p>
-
-    <h2>What’s Coming Soon</h2>
-
-    <p>
-        A much larger library of academic content is on the way. The goal is to transform TakeItEasy! from a simple
-        resource hub into a complete study companion for students who want everything in one place — organized,
-        accessible, and easy to use.
-    </p>
-
-    <ul>
-        <li>• <strong>More Books & Workbooks</strong> — Additional FBISE SSC‑I and IGCSE textbooks, workbooks, and
-            supplementary reading materials will be added to expand your study options.</li>
-
-        <li>• <strong>Notes & Summaries</strong> — Clear, concise, and student‑friendly notes to help you revise
-            faster and understand concepts more easily.</li>
-
-        <li>• <strong>Practice Questions</strong> — Topic‑wise and chapter‑wise practice questions to help you test
-            your understanding and prepare more effectively.</li>
-
-        <li>• <strong>Past Paper Section</strong> — A dedicated area for past papers, marking schemes, and examiner
-            reports to help you practice real exam‑style questions.</li>
-
-        <li>• <strong>Sign‑Up Benefits</strong> — Registered users will gain access to exclusive features such as
-            saved progress, personalized study recommendations, downloadable resources, and early access to new
-            materials.</li>
-    </ul>
-
-    <h2>Why This Update Matters</h2>
-
-    <p>
-        The goal of this upgrade is simple: make studying easier. Whether you’re preparing for FBISE SSC‑I exams or
-        working through IGCSE subjects, TakeItEasy! aims to provide everything you need — from books to notes to
-        practice material — all in one clean, organized platform. No more searching across multiple websites or
-        dealing with scattered resources.
-    </p>
-
-    <h2>More Improvements on the Way</h2>
-
-    <p>
-        This is only the beginning. After the initial update, more features will continue to roll out, including
-        interactive tools, smarter resource organization, and additional support for students who want to study
-        efficiently and confidently.
-    </p>
-
-    <p>
-        Thank you for your patience. The new version of TakeItEasy! is on the way — bigger, better, and more helpful
-        than ever.
-    </p>
-
-  <!--<header class="header">
+   <header class="header">
     <nav class="nav">
+      <div id="header-auth-left" style="display:flex; gap:8px; align-items:center; margin-right:6px;"></div>
       <a class="logo" href="#" data-route="home" aria-label="Homepage">
-        <img src="assets/take-it-easy-logo.svg" alt="Take it Easy! logo" style="height:36px;" loading="lazy" />
-        <span>Take It Easy!</span>
+        <svg class="logo-svg" viewBox="0 0 36 36" aria-hidden="true" role="img" focusable="false"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20">😊</text></svg>
+        <span><i>Take It Easy!</i></span>
       </a>
+      <button id="nav-toggle" class="btn-pill" type="button" aria-label="Menu" aria-expanded="false" title="Menu" style="display:none;"> 
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
       <div class="search" role="search">
-        <input id="search-input" type="search" placeholder="Search resources" aria-label="Search resources" />
-        <button id="search-btn" aria-label="Search">Search</button>
+        <input id="search-input" type="search" placeholder="Search" aria-label="Search" />
+        <button id="search-btn" aria-label="Search" title="Search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
       </div>
       <div class="nav-links">
-        <a class="btn-pill" href="#" data-route="home">Home</a>
-        <a class="btn-pill" href="#" data-route="about">About Us</a>
-        <a class="btn-pill" href="#" data-route="fbise">FBISE Grade 9</a>
-        <a class="btn-pill" href="#" data-route="igcse">IGCSE / O Level</a>
+        <a class="btn-pill" href="#" data-route="home">Home 🏠</a>
+        <a class="btn-pill" href="#" data-route="about">About Us ❓</a>
+        <a class="btn-pill" href="#" data-route="fbise">FBISE 📚</a>
+        <a class="btn-pill" href="#" data-route="igcse">IGCSE 📚</a>
+        <div class="nav-item"><a class="btn-pill" href="#" data-route="pastpapers">Past Papers 📄</a><span class="nav-badge">new 🔥</span></div>
+        <div id="auth-area" style="margin-left:12px; display:flex; align-items:center; gap:8px;"></div>
       </div>
     </nav>
   </header>
+
+  <aside class="left-sidebar" aria-hidden="false">
+    <button id="sidebar-toggle" aria-label="Open menu" title="Menu" type="button">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <nav class="sidebar-menu" id="sidebar-menu" aria-hidden="true">
+      <a href="#" data-route="home">Home 🏠</a>
+      <a href="#" data-route="about">About Us ❓</a>
+      <a href="#" data-route="fbise">FBISE 📚</a>
+      <a href="#" data-route="igcse">IGCSE 📚</a>
+      <a href="#" data-route="pastpapers">Past Papers 📄<span class="new-badge">new 🔥</span></a>
+      <a href="#" data-route="support"> Support 📞</a>
+    </nav>
+  </aside>
 
   
   <div id="loading-overlay" aria-hidden="true">
@@ -239,8 +372,8 @@
       <div id="viewer-header">
         <div id="viewer-title">Document Viewer</div>
         <div style="display:flex; gap:8px; align-items:center;">
-          <a id="viewer-download" class="btn-pill" href="#" download>Download</a>
-          <button class="btn-pill" id="viewer-close">Close</button>
+          <a id="viewer-download" class="btn-pill" href="#" download>Download ⬇️</a>
+          <button class="btn-pill" id="viewer-close">Close ❌</button>
         </div>
       </div>
       <div id="viewer-body"></div>
@@ -251,21 +384,23 @@
   <div id="file-picker-overlay" aria-hidden="true" style="display:none; place-items:center; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:2150;">
     <div style="background:var(--card); border:1px solid var(--border); padding:16px; border-radius:12px; width:min(420px, 92vw); box-shadow:var(--shadow);">
       <h3 style="margin:0 0 8px;">Open file</h3>
-      <div id="file-picker-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+      <div id="file-picker-list"></div>
       <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:12px;"><button class="btn-pill" id="file-picker-cancel">Cancel</button></div>
     </div>
   </div>
+
+
 
   <main>
     <section id="route-home" class="route active" aria-label="Home">
       <div class="hero">
         <h1>All your study resources in one place</h1>
         <p>
-          This platform is built to collect, curate, and present the textbooks, syllabuses, study guides and practical manuals students actually need — quickly and without hassle. Created to make studying easier, it focuses on core materials for FBISE (SSC-I / Grade 9) and Cambridge IGCSE/O Level exams: from official textbooks to targeted workbooks and past-paper style practice. Whether you are strengthening fundamentals in Mathematics, improving English language skills, or preparing for practical exams and lab work, you’ll find dependable resources that save time and reduce stress. The site is optimized for fast searching and quick downloads, and it’s mobile-friendly so you can study on the go. New materials are added regularly — if a file is missing locally, you can add it to the resources folder and the site will pick it up.
+          This platform is built to collect, curate, and present the textbooks, syllabuses, study guides and practical manuals students actually need — quickly and without hassle. Created to make studying easier, it focuses on core materials for FBISE (SSC-I / Grade 9) and Cambridge IGCSE/O Level exams: from official textbooks to targeted workbooks and past-paper style practice. Whether you are strengthening fundamentals in Mathematics, improving English language skills, or preparing for practical exams and lab work, you’ll find dependable resources that save time and reduce stress. The site is optimized for fast searching and quick downloads, and it’s mobile-friendly so you can study on the go. New materials are added regularly.
         </p>
         <div class="home-descriptions" style="margin-top:16px; display:grid; grid-template-columns:repeat(2,1fr); gap:12px;">
           <div><strong>FBISE (SSC-I)</strong>: Pakistan’s Federal Board syllabus for Grade 9 covering core subjects like English, Urdu, Mathematics, Islamiyat and introductory science topics — ideal for building a strong foundation and preparing for school exams.</div>
-          <div><strong>IGCSE / O Level</strong>: Cambridge international syllabus with subject-focused materials (English, Mathematics, Physics, Chemistry, Computer Science) geared toward higher-secondary exam success and conceptual understanding.</div>
+          <div><strong>IGCSE</strong>: Cambridge international syllabus with subject-focused materials (English, Mathematics, Physics, Chemistry, Computer Science) geared toward higher-secondary exam success and conceptual understanding.</div>
         </div>
       </div>
       <div class="pills">
@@ -279,7 +414,7 @@
         </article>
         <article class="pill">
           <div style="display:flex; flex-direction:column; gap:10px;">
-            <h2>IGCSE / O Level Resources</h2>
+            <h2>IGCSE Resources</h2>
           </div>
           <div class="actions">
             <a class="cta" href="#" data-route="igcse">Open IGCSE</a>
@@ -295,8 +430,8 @@
             <p class="pill-desc">Official Grade 9 materials covering English, Urdu, Mathematics, Islamiyat, Chemistry and Physics. This section focuses on textbooks, practical manuals and subject-specific workbooks to support classroom learning and exam preparation. Click "Open FBISE" to view available files.</p>
           </div>
           <div class="card">
-            <h3>IGCSE / O Level </h3>
-            <p class="pill-desc">Cambridge IGCSE and O Level resources for core subjects: English , Mathematics , Physics , Chemistry  and Computer Science. Includes syllabus documents, study guides and practice workbooks to help prepare for the exams.</p>
+            <h3>IGCSE</h3>
+            <p class="pill-desc">Cambridge IGCSE and O Level resources for core subjects: English , Mathematics , Physics , Chemistry  and Computer Science. Includes syllabus documents, study guides and practice workbooks to help prepare for the exams. Click "Open IGCSE" to view available files.</p>
           </div>
         </div>
       </div>
@@ -305,18 +440,65 @@
     <section id="route-fbise" class="route" aria-label="FBISE">
       <div class="container">
         <h1>FBISE — SSC-I (Grade 9)</h1>
-        <p class="section-intro">Below are the available subjects and files for FBISE Grade 9. Use the cards to view or download textbooks, practical manuals and supplementary workbooks.</p>
-        <div class="card" style="margin-bottom:12px;"><strong>What you'll find:</strong> Official textbooks, grammar guides, practical workbooks and revision materials aligned to FBISE syllabuses — focused on building a strong foundation in core subjects and preparing for school exams.</div>
+        <p class="section-intro">Below are the available subjects and files for FBISE. Use the cards to view or download textbooks, practical manuals and supplementary workbooks.</p>
+        <div class="card" style="margin-bottom:12px;"><strong>What you'll find:</strong> Official textbooks, grammar guides, practical workbooks and revision materials aligned to FBISE syllabuses — focused on building a strong foundation in core subjects and preparing for school exams.<br> <b>More Coming Soon!!!</b></div>
         <div id="fbise-grid" class="grid" aria-live="polite"></div>
       </div>
     </section>
 
     <section id="route-igcse" class="route" aria-label="IGCSE">
       <div class="container">
-        <h1>Cambridge IGCSE / O Level</h1>
+        <h1>Cambridge IGCSE</h1>
         <p class="section-intro">Below are the available subjects and files for Cambridge IGCSE/O Level. Here you'll find syllabuses, study guides and targeted workbooks to support exam preparation and deepen subject knowledge.</p>
-        <div class="card" style="margin-bottom:12px;"><strong>What you'll find:</strong> Syllabus documents, study guides, practice workbooks and select textbooks covering key IGCSE topics and exam-style practice questions to help you revise efficiently.</div>
+        <div class="card" style="margin-bottom:12px;"><strong>What you'll find:</strong> Syllabus documents, study guides, practice workbooks and select textbooks covering key IGCSE topics and exam-style practice questions to help you revise efficiently.<br> <b>More Coming Soon!!!</b></div>
         <div id="igcse-grid" class="grid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="route-pastpapers" class="route" aria-label="Past Papers">
+      <div class="container">
+        <h1>Past Papers</h1>
+        <p class="section-intro">Past papers for FBISE and IGCSE. Browse subjects below and click to view files when available.</p>
+        <div class="card" style="margin-bottom:12px;"><strong>What you'll find:</strong> Subject-wise past papers and practice tests — organized for FBISE (SSC-I) and IGCSE/O Level. <b>More coming soon!!!</b></div>
+        <div class="container" style="margin-top:20px;">
+          <div id="pastpapers-selection">
+            <div class="grid" style="grid-template-columns: 1fr; gap:18px;">
+              <div>
+                <article class="pill">
+                  <div>
+                    <h2>FBISE Past Papers</h2>
+                  </div>
+                  <div class="actions">
+                    <a class="cta" href="#" id="open-pf-fbise">Open FBISE</a>
+                  </div>
+                </article>
+              </div>
+              <div>
+                <article class="pill">
+                  <div>
+                    <h2>IGCSE Past Papers</h2>
+                  </div>
+                  <div class="actions">
+                    <a class="cta" href="#" id="open-pf-igcse">Open IGCSE</a>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </div>
+
+          <div id="pastpapers-board" style="display:none; margin-top: 18px;">
+            <div id="pastpapers-board-header" style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px;"></div>
+            <div id="pastpapers-board-grid" class="grid" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="route-support" class="route" aria-label="Support">
+      <div class="container">
+        <h1>Support</h1>
+        <p class="section-intro">Whenever you need assistance, have a question, or simply want to share your thoughts, we want you to know that reaching out to us is always encouraged and genuinely appreciated. We believe that great tools are built through collaboration, curiosity, and open communication, and your voice plays a huge role in shaping the direction of everything we create. Whether you’ve discovered a small bug, have an idea that could make the experience smoother for others, or just want to understand how something works behind the scenes, we’re here to help with patience, clarity, and enthusiasm. You can contact us anytime at <b><a href="mailto:aarizzqadeer@gmail.com">aarizzqadeer@gmail.com</a></b>, and we’ll make sure your message gets the attention it deserves. We take pride in responding thoughtfully and promptly because your time matters, your experience matters, and your trust matters. Every email we receive is an opportunity to improve, refine, and grow — not just the project, but the community around it. So don’t hesitate to reach out whenever something crosses your mind; your feedback fuels progress, inspires new ideas, and helps us build tools that feel more intuitive, more reliable, and more meaningful for everyone who uses them.
+</p>
       </div>
     </section>
 
@@ -332,22 +514,22 @@ To empower students with easy access to authentic educational content, enabling 
 
 <h1>FBISE SSC-I Subjects Overview</h1>
 
-English: Improve your reading, writing, and comprehension skills with the official FBISE English textbook and grammar guides.
-Urdu: Master your national language with structured lessons and exercises.
-Mathematics: Build a strong foundation in algebra, geometry, and problem-solving techniques.
-Islamiyat: Understand Islamic principles, history, and values through comprehensive study material.
-Chemistry: Explore chemical reactions, equations, and practical experiments with both theory and practical books.
-Physics: Learn the laws of motion, energy, and forces with clear explanations and worked examples.
-Computer Science: Gain essential knowledge of computing concepts, programming basics, and IT fundamentals.
+English: Improve your reading, writing, and comprehension skills with the official FBISE English textbook and grammar guides.<br>
+Urdu: Master your national language with structured lessons and exercises.<br>
+Mathematics: Build a strong foundation in algebra, geometry, and problem-solving techniques.<br>
+Islamiyat: Understand Islamic principles, history, and values through comprehensive study material.<br>
+Chemistry: Explore chemical reactions, equations, and practical experiments with both theory and practical books.<br>
+Physics: Learn the laws of motion, energy, and forces with clear explanations and worked examples.<br>
+Computer Science: Gain essential knowledge of computing concepts, programming basics, and IT fundamentals.<br>
 
 
-<h1>IGCSE / O Level Subjects Overview</h1>
+<h1>IGCSE Subjects Overview</h1>
 
-English as a Second Language (0510): Enhance your language proficiency with textbooks and syllabuses tailored for Cambridge standards.
-Mathematics (0580 & 0606): Tackle core and additional mathematics with structured guides and practice workbooks.
-Physics (0625): Dive into mechanics, electricity, and waves with books, study guides, and workbooks.
-Chemistry (0620): Understand atomic structure, bonding, and chemical processes with theory and practical resources.
-Computer Science (0478): Learn programming, algorithms, and computational thinking with comprehensive guides.
+English as a Second Language (0510): Enhance your language proficiency with textbooks and syllabuses tailored for Cambridge standards.<br>
+Mathematics (0580 & 0606): Tackle core and additional mathematics with structured guides and practice workbooks.<br>
+Physics (0625): Dive into mechanics, electricity, and waves with books, study guides, and workbooks.<br>
+Chemistry (0620): Understand atomic structure, bonding, and chemical processes with theory and practical resources.<br>
+Computer Science (0478): Learn programming, algorithms, and computational thinking with comprehensive guides.<br>
 
 
 <h1>Why Choose Us?</h1>
@@ -359,9 +541,10 @@ Reliable content – Official and high-quality study materials.<br>
 Student-focused design – Simple, clean, and mobile-friendly.<br>
 We are committed to supporting your educational journey. Explore our resources, study at your own pace, and take the stress out of exam preparation. Remember, with the right tools and mindset, you can achieve anything. So sit back, relax, and let us help you take it easy on your path to success!
         </p>
+        <h2>Summarized Available Subjects (more coming soon!!)</h2>
         <ul>
           <li><strong>FBISE </strong>: English, Urdu, Math, Islamiat, Chemistry, Physics, Computer, Practical books.</li>
-          <li><strong>IGCSE</strong>: 0510 English, 0606 Add. Math, 0580 Mathematics, 0625 Physics, 0620 Chemistry, 0478 Computer Science.</li>
+          <li><strong>IGCSE</strong>: 0510 English as a Second language, 0606 Add. Math, 0580 Mathematics, 0625 Physics, 0620 Chemistry, 0478 Computer Science.</li>
         </ul>
       </div>
     </section>
@@ -369,24 +552,25 @@ We are committed to supporting your educational journey. Explore our resources, 
 
   <footer class="footer">
     <div class="inner">
-      <p>© 2025 Take It Easy! </p>
+      <p>© 2025 - 2026 <i>Take It Easy!</i> - All Rights Reserved</p>
     </div>
   </footer>
 
+  <button id="theme-toggle" aria-label="Toggle dark mode" aria-pressed="false" type="button" title="Toggle dark mode">
+    <!-- moon (indicates switch to dark mode) -->
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+  </button>
+
   <script>
-    // ----------------------------------------------
-    // DATA: Edit below to add or change files
-    // Use either public URLs (https://...) or base64 Data URIs (data:application/pdf;base64,...)
-    // ----------------------------------------------
     const DATA = {
       fbise: [
-        { subject: "English", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1C4eBxOLaS558CvTLIMC_OFySqNoIRWqB/view" }, { label: "Grammar", path: "https://drive.google.com/file/d/1El7MQKvbbDrP3Cg_sNh7305hGy9Aumuu/view" } ] },
-        { subject: "Urdu", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1HxLnU7K03s4pMMO1zt8F6ILm98g8KKg2/view" } ] },
-        { subject: "Mathematics", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1mj2YNK3luES-iCpFsX26dVSkdTqmVxcB/view" } ] },
-        { subject: "Islamiyat", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1-qMSpSjhPdcrkWo5LbHj8u-mG1u9q6dY/view" } ] },
-        { subject: "Chemistry", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1nl3kS1kkQov4TcKZxNy9jqBhbh2o6o7M/view" }, { label: "Practical Book", path: "https://drive.google.com/file/d/1MDs4MKYWWJXY6fcTKGBO_TYmA7fNsq-i/view" } ] },
-        { subject: "Physics", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1RlOzWYw4wjAC2kbtCljfJ1jNMqC8GN4l/view" } ] },
-        { subject: "Computer", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1CoFKEvUo4C2csPytO21_IGfTDlUP2072/view" } ] }
+        { subject: "English", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1STmCUqkSh_-Yi6dxeSYMa3nIxxyfp3tJ/view" }, { label: "Grammar", path: "https://drive.google.com/file/d/1El7MQKvbbDrP3Cg_sNh7305hGy9Aumuu/view" } ] },
+        { subject: "Urdu", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1w8Eq5UEESJO9fbxF9SWuD2FUpxJfQLx9/view" } ] },
+        { subject: "Mathematics", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1LSwdq3UBycLK90Cv4rEjx7webDw20gbK/view" } ] },
+        { subject: "Islamiyat", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1RgXcQ1yayTYLpGZe4OzB7gFQHvn7NWeB/view" } ] },
+        { subject: "Chemistry", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1HPAq--q1vCOG619GZovd0fYHzvjUVDR1/view" }, { label: "Practical Book", path: "https://drive.google.com/file/d/17Z0HrVwRXROgQAZtKKxf8umk6m7yc2AK/view" } ] },
+        { subject: "Physics", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/1446YHn6BVddg_1XBJ2a-0HEKLqs8MUOX/view" }, { label: "Practical Book", path: "https://drive.google.com/file/d/1jTfmG7tKky1K_roENBgRjN8iRwYoyRSv/view" } ] },
+        { subject: "Computer", code: "SSC-I", files: [ { label: "Book", path: "https://drive.google.com/file/d/17x_vKH-UMlrUuUAPemhgFs5EeKe9_zp1/view" }, { label: "Practical Book", path: "https://drive.google.com/file/d/1KB9r6muuHa3tgQRjQZG7dzt776oTPsnp/view" } ] }
       ],
       igcse: [
         { subject: "English as a Second Language", code: "0510", files: [ { label: "Book", path: "https://drive.google.com/file/d/1urUVuCNNdzTqowJZdxAR7jDr2XC9RV2O/view" }, { label: "Syllabus", path: "https://drive.google.com/file/d/11alyYszawyE7ntFi13YBhMNfC6Gp6wzV/view" } ] },
@@ -395,26 +579,103 @@ We are committed to supporting your educational journey. Explore our resources, 
         { subject: "Physics", code: "0625", files: [ { label: "Book", path: "https://drive.google.com/file/d/18OsnX_8KqW8V4lJwBdYiffIHwFlhCkWj/view" }, { label: "Study Guide", path: "https://drive.google.com/file/d/1DhmcbuiMxA83vRTD375dDGGbHDGyWccC/view" }, { label: "Workbook", path: "https://drive.google.com/file/d/10lf27YNJ7ghdSH8AVR_eFFMYuD7NF-bU/view" }, { label: "Syllabus", path: "https://drive.google.com/file/d/1OVlSKcMDd-9t8VDQFLB-knlNwZEB2sFF/view" } ] },
         { subject: "Chemistry", code: "0620", files: [ { label: "Book", path: "https://drive.google.com/file/d/1eMCjYY_X5RYv1ldPkvm443WZb_S177r4/view" }, { label: "Study Guide", path: "https://drive.google.com/file/d/1U1HjbQEk4KwzleFBqVFfmNkUonnSQjjV/view" }, { label: "Workbook", path: "https://drive.google.com/file/d/1etu4s48EiO3FE88AmdnbaU7nZlY7dEwo/view" }, { label: "Practical Workbook", path: "https://drive.google.com/file/d/10PPOBN7cNsMLnleToUBXbnmxwBzZyIcQ/view" }, { label: "Syllabus", path: "https://drive.google.com/file/d/1F_p0xbsFzHzJcncF18gRQtzmJTHXRbcm/view" } ] },
         { subject: "Computer Science", code: "0478", files: [ { label: "Book", path: "https://drive.google.com/file/d/148YUSYQHgTQtpYanvxt7y6tlNq36H-or/view" }, { label: "Study Guide", path: "https://drive.google.com/file/d/1Tii1zydHKIKmcHdBuNymUSA7dRKTFSYy/view" }, { label: "Syllabus", path: "https://drive.google.com/file/d/1uh84BhPVgUymNLFiu_6osrxOiIRbutCM/view" } ] }
-      ]
+      ],
+      pastpapers: {
+        fbise: [
+          { subject: "English", code: "SSC-I", files: [ { label: "Paper 1", path: "https://drive.google.com/file/d/1g5pFjuBpfvl5iSehOuNwMosxm5sCpK-h/view" }, { label: "Paper 2", path: "https://drive.google.com/file/d/1nIBgbzi2M9qgxLIetm-R9LIb1600Y7_H/view" } ] },
+          { subject: "Urdu", code: "SSC-I", files: [ { label: "Paper 1", path: "https://drive.google.com/file/d/1ozbwdX7LFYOphJgrQThvvFFR_ltSDYXW/view" }, { label: "Paper 2", path: "https://drive.google.com/file/d/1qAGY7ZYj19T4MAZf7ymqNSMf4XJ8Ximv/view" } ] },
+          { subject: "Mathematics", code: "SSC-I", files: [ { label: "Paper 1", path: "https://drive.google.com/file/d/121LvfwnVorWvHz0nV9DFurD59R7ERXKK/view" }, { label: "Paper 2", path: "https://drive.google.com/file/d/1GyvLdHayi6n3juSBD40JABR-bSuMm9S2/view" } ] },
+          { subject: "Islamiyat", code: "SSC-I", files: [ ] },
+          { subject: "Chemistry", code: "SSC-I", files: [ { label: "Paper 1", path: "https://drive.google.com/file/d/18mwM6na-XZQli8Ud4H3cVl74b_EBQn3k/view" }, { label: "Paper 2", path: "https://drive.google.com/file/d/1iPjZOJs-1V5E5t7F8qx95SudSQeOVJhk/view" } ] },
+          { subject: "Physics", code: "SSC-I", files: [ { label: "Paper 1", path: "https://drive.google.com/file/d/1h1e7JWeZFGJ3a2ej43evE2MKpxi_vEUp/view" }, { label: "Paper 2", path: "https://drive.google.com/file/d/1S7e9jspL0r7PCSl2RJsOWWAo2871Q2yC/view" } ] },
+          { subject: "Computer", code: "SSC-I", files: [ { label: "Paper 1", path: "https://drive.google.com/file/d/1e0UwqGlHhu0ySKo8WINrUdxdC3a7t-Ed/view" }, { label: "Paper 2", path: "https://drive.google.com/file/d/19vLRXYhj5VWI6lnvcIWYr5sCCNtdxOYX/view" } ] }
+        ],
+        igcse: [
+          { subject: "English as a Second Language", code: "0510", files: [ ] },
+          { subject: "Mathematics (Additional)", code: "0606", files: [ { label: "Paper 1", path: "https://drive.google.com/file/d/1jCMSqazfBvxDbJc2_SZ2Mjize2t1_e20/view" }, { label: "Paper 2", path: "https://drive.google.com/file/d/1tbj0u89c-rsgksE3faBz9ZzX0oFbcDkw/view" }, { label: "Paper 3", path: "https://drive.google.com/file/d/1r6nbx7DnCwY2d4gCz4cWiudJIKxRrGTP/view" }, { label: "Paper 4", path: "https://drive.google.com/file/d/1WeibzPai0VN_dxEpdm4mvYLb7aAn6Dqj/view" }, { label: "Paper 5", path: "https://drive.google.com/file/d/1hrL8AWJCDO-tGRohJrPp-K-umskP0tkc/view" }, { label: "Paper 6", path: "https://drive.google.com/file/d/1rtm1vumfH-7ryyC-8OMytVHMCD3hJzIM/view" } ] },
+          { subject: "Mathematics", code: "0580", files: [ { label: "Paper 1", path: "https://drive.google.com/file/d/1ZGCLLwhZzQ1w2IQQ0IIemLBZkHM0RXb1/view" }, { label: "Paper 2", path: "https://drive.google.com/file/d/11LtG2Ig3It-RpCPhreIzkVzxKzMJBk1B/view" }, { label: "Paper 3", path: "https://drive.google.com/file/d/1XGWiGtF3saXBgwy2iiOeGaOT3AaYd4cm/view" }, { label: "Paper 4", path: "https://drive.google.com/file/d/1ndskAYUjv_O5BnySUec-lbcikfbXdi22/view" }, { label: "Paper 5", path: "https://drive.google.com/file/d/1Hm_sZCjqe1dhW6RkksvNV6BAB2652B3E/view" }, { label: "Paper 6", path: "https://drive.google.com/file/d/1yKLiJkQgoQ8bnWa7yAp0YIylbwe3e1dr/view" } ] },
+          { subject: "Physics", code: "0625", files: [ { label: "Paper 1", path: "https://drive.google.com/file/d/15UDDIuL8BO3TMpa0h3sIFGD4XFL9Lfj6/view" }, { label: "Paper 2", path: "https://drive.google.com/file/d/16dlCsK5CzXsfRxBqcY7so4trYCNkar4A/view" }, { label: "Paper 3", path: "https://drive.google.com/file/d/1Ow41JRkKHppzkZ-ozBF_lQpsUOhobEWE/view" }, { label: "Paper 4", path: "https://drive.google.com/file/d/1zc-UffuhpfgQPO6w7Qnqi7lHFi3TIqR9/view" }, { label: "Paper 5", path: "https://drive.google.com/file/d/1k4I92vPDy97JqC7XG3iciFrr7WnH-kgu/view" }, { label: "Paper 6", path: "https://drive.google.com/file/d/1TqXmKC7TfYekYlLDX7GYWeeCry8vMet_/view" } ] },
+          { subject: "Chemistry", code: "0620", files: [ { label: "Paper 1", path: "https://drive.google.com/file/d/1l7bnx8AfZRLTK2at2-6W1woRAkPCO2n0/view" }, { label: "Paper 2", path: "https://drive.google.com/file/d/1QyBlUQB9O_iK8taEGLlkWPcwxHovDmPK/view" }, { label: "Paper 3", path: "https://drive.google.com/file/d/1FgfcK3zWuXvgHXRTpaM-DkIIERe91nFo/view" }, { label: "Paper 4", path: "https://drive.google.com/file/d/1U-Qk66YnV8-kqbjqDeybJOR52Oa4SgG1/view" }, { label: "Paper 5", path: "https://drive.google.com/file/d/1YLvM-x4LaWfcOnieOWPN446V3Lb4GOss/view" }, { label: "Paper 6", path: "https://drive.google.com/file/d/1n5Wa2TtbyjoRsIh7lbPsYY18JPPx-IV1/view" } ] },
+          { subject: "Computer Science", code: "0478", files: [ { label: "Paper 1", path: "https://drive.google.com/file/d/16kNmda166_pR7Qe1bzURpgr5TrOsm5gx/view" }, { label: "Paper 2", path: "https://drive.google.com/file/d/1K2QxBr6m-cvcMYw6EamIUH8nYCWaMGDu/view" }, { label: "Paper 3", path: "https://drive.google.com/file/d/1b7SU01KOhVYy2x7kT5lWyFALKjGV22Ey/view" }, { label: "Paper 4", path: "https://drive.google.com/file/d/1xdbbWlxBPIbnC5y_0LSQ9EYFpSB3mcu3/view" }, { label: "Paper 5", path: "https://drive.google.com/file/d/1H5poj8xK7wmCrt-zl7G1acl22KRynJPz/view" }, { label: "Paper 6", path: "https://drive.google.com/file/d/1PQMkHBWq9M97b43AQ0JQOqAy0_-SNyqQ/view" } ] }
+        ]
+      }
     };
-    function showLoader(){ const o=document.getElementById('loading-overlay'); if (!o) return; o.style.display='flex'; o.setAttribute('aria-hidden','false'); }
-    function hideLoader(){ const o=document.getElementById('loading-overlay'); if (!o) return; o.style.display='none'; o.setAttribute('aria-hidden','true'); }
+
+  
+    window.SUPPORT_FORM_ENDPOINT = '';
+
+    // EmailJS options configured from the EmailJS dashboard (service/template/public user key)
+    window.EMAILJS_OPTIONS = {
+      service_id: 'service_ylhw6hm',
+      template_id: 'template_d787o7w',
+      public_key: 'oxZjfHnS4VRZPNHfe'
+    };
+
+    function showLoader(){ const o=document.getElementById('loading-overlay'); if (!o) return; o.style.display='flex'; o.setAttribute('aria-hidden','false'); try{ console.log('[loader] show', new Date().toISOString()); console.trace(); }catch(_){ } }
+    function hideLoader(){ const o=document.getElementById('loading-overlay'); if (!o) return; o.style.display='none'; o.setAttribute('aria-hidden','true'); try{ console.log('[loader] hide', new Date().toISOString()); console.trace(); }catch(_){ } }
+
+    let pastPapersState = 'selection'; // 'selection' | 'fbise' | 'igcse'
+    function showPastPapersSelection(){
+      const sel = document.getElementById('pastpapers-selection');
+      const board = document.getElementById('pastpapers-board');
+      if (sel) sel.style.display = 'block';
+      if (board) board.style.display = 'none';
+      pastPapersState = 'selection';
+    }
+    function showPastPapersBoard(boardKey){
+      // boardKey: 'fbise' or 'igcse'
+      const sel = document.getElementById('pastpapers-selection');
+      const board = document.getElementById('pastpapers-board');
+      const header = document.getElementById('pastpapers-board-header');
+      const grid = document.getElementById('pastpapers-board-grid');
+      if (!board || !grid) return;
+      if (sel) sel.style.display = 'none';
+      showLoader();
+      board.style.display = 'block';
+      header.innerHTML = `<h2 style="margin:0">${boardKey.toUpperCase() === 'FBISE' ? 'FBISE Past Papers' : 'IGCSE Past Papers'}</h2>`;
+      // default to three columns on larger screens
+      renderPastPapersGrid(DATA.pastpapers[boardKey], 'pastpapers-board-grid', boardKey);
+      pastPapersState = boardKey;
+      board.scrollIntoView({behavior:'smooth'});
+      // keep loader visible briefly to indicate work
+      setTimeout(()=>{ try{ hideLoader(); }catch(_){ } }, 220);
+    }
 
     function showRoute(name){
+      // prevent rapid duplicate navigations
+      try{ if (window._lastShowRouteName === name && Date.now() - (window._lastShowRouteTime||0) < 600){ try{ console.log('[showRoute] debounced', name); console.trace(); }catch(_){ } return; } window._lastShowRouteName = name; window._lastShowRouteTime = Date.now(); }catch(_){ }
       // show loading animation then switch route
-      showLoader();
+      try{ console.log('[showRoute] start', name, new Date().toISOString()); console.trace(); }catch(_){ }
+      // if this is the very first navigation after init, skip the loader to avoid a double-show effect
+      try{
+        if (window._suppressInitialLoader && !window._initialRouteShown){
+          window._initialRouteShown = true;
+          try{ console.log('[showRoute] initial navigation - skipping loader', name); }catch(_){ }
+        } else {
+          showLoader();
+        }
+      }catch(_){ try{ showLoader(); }catch(__){ } }
       setTimeout(()=>{
-        document.querySelectorAll('.route').forEach(el=> el.classList.remove('active'));
-        const id = `route-${name}`;
-        const el = document.getElementById(id);
-        if (el) el.classList.add('active');
-        // update active nav buttons
-        document.querySelectorAll('.nav-links .btn-pill').forEach(btn=> btn.classList.toggle('active', btn.getAttribute('data-route')===name));
-        // update any other elements with data-route
-        document.querySelectorAll('[data-route]').forEach(el=> { if(el.classList) el.classList.toggle('active', el.getAttribute('data-route')===name); });
-        localStorage.setItem('site:route', name);
-        window.scrollTo({top:0, behavior:'smooth'});
-        hideLoader();
+        try{
+          document.querySelectorAll('.route').forEach(el=> el.classList.remove('active'));
+          const id = `route-${name}`;
+          const el = document.getElementById(id);
+          if (el) el.classList.add('active');
+          // update active nav buttons
+          document.querySelectorAll('.nav-links .btn-pill').forEach(btn=> btn.classList.toggle('active', btn.getAttribute('data-route')===name));
+          // update any other elements with data-route
+          document.querySelectorAll('[data-route]').forEach(el=> { if(el.classList) el.classList.toggle('active', el.getAttribute('data-route')===name); });
+          // when navigating to Past Papers, always show the selection buttons
+          if (name === 'pastpapers') showPastPapersSelection();
+          window.currentRoute = name;
+          localStorage.setItem('site:route', name);
+          window.scrollTo({top:0, behavior:'smooth'});
+        } catch(err){
+          console.error('showRoute error', err);
+        } finally {
+          // ensure loader is hidden even if an error occurs
+          try{ hideLoader(); }catch(_){ /* ignore */ }
+        }
       }, 350);
     }
 
@@ -440,19 +701,21 @@ We are committed to supporting your educational journey. Explore our resources, 
       const actions = document.createElement('div');
       actions.className = 'actions';
       const viewBtn = document.createElement('button');
-      viewBtn.className = 'action-btn';
+      viewBtn.type = 'button';
+      // Use the success modifier to indicate a secondary positive action (green)
+      viewBtn.className = 'action-btn success';
       viewBtn.textContent = 'View';
-      viewBtn.addEventListener('click', ()=> openFilePicker(item));
-      const dlBtn = document.createElement('a');
+      viewBtn.addEventListener('click', (e)=>{ e.preventDefault(); e.stopPropagation(); openFilePicker(item); });
+      const dlBtn = document.createElement('button');
+      dlBtn.type = 'button';
       dlBtn.className = 'action-btn primary';
       dlBtn.textContent = 'Download';
-      let dlHref = item.files[0]?.path || '#';
-      if (isDriveUrl(dlHref)){
-        const id = getDriveFileId(dlHref);
-        if (id) dlHref = driveDownloadUrl(id);
+      dlBtn.addEventListener('click', (e)=>{ e.preventDefault(); e.stopPropagation(); openResourceDownloadPicker(item); });
+      // Disable actions if there are no files
+      if (!item.files || item.files.length === 0){
+        viewBtn.classList.add('disabled'); viewBtn.setAttribute('aria-disabled','true'); viewBtn.disabled = true;
+        dlBtn.classList.add('disabled'); dlBtn.setAttribute('aria-disabled','true'); dlBtn.disabled = true;
       }
-      dlBtn.href = dlHref;
-      dlBtn.download = '';
       actions.append(viewBtn, dlBtn);
       card.append(title, meta, files, actions);
       return card;
@@ -465,24 +728,98 @@ We are committed to supporting your educational journey. Explore our resources, 
     }
 
     // ----------------------------------------------
+    // Past Papers renderer (consistent year badges for 2024/2023/2022)
+    // ----------------------------------------------
+    function createPastPaperCard(item, boardKey){
+      const card = document.createElement('article');
+      card.className = 'card';
+      const title = document.createElement('h3');
+      title.textContent = `${item.subject}${item.code ? ' ('+item.code+')':''}`;
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+      meta.textContent = 'Past papers available: ' + (item.files ? item.files.length : 0);
+
+      // short flag for special-case behavior (Islamiyat has no past papers)
+      const isIslamiyat = String(item.subject || '').toLowerCase().includes('islam');
+      const isFbise = String(boardKey || '').toLowerCase() === 'fbise';
+
+      const yearRow = document.createElement('div');
+      yearRow.className = 'year-row';
+      const labels = isFbise ? ['Paper 1','Paper 2','Paper 3'] : (String(boardKey||'').toLowerCase() === 'igcse' ? ['Paper 1','Paper 2','Paper 3','Paper 4','Paper 5','Paper 6'] : ['2024','2023','2022']);
+
+      labels.forEach((label, idx)=>{
+        const found = (item.files || []).find(f => String(f.label) === String(label));
+        const display = label;
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'year-badge small';
+        b.textContent = display;
+        b.setAttribute('aria-pressed','false');
+        if (isIslamiyat || (String(item.code||'') === '0510' && String(boardKey||'').toLowerCase() === 'igcse') || (isFbise && String(display) === 'Paper 3')){
+          // For Islamiyat, IGCSE 0510, and FBISE Paper 3, show years but keep them disabled (grayed out) and non-interactive
+          b.classList.add('disabled');
+          b.setAttribute('aria-disabled','true');
+          b.disabled = true;
+          b.title = 'Not available';
+        } else {
+          b.addEventListener('click', (e)=>{
+            e.preventDefault(); e.stopPropagation();
+            if (found){
+              openViewer(found);
+            } else {
+              // brief inline message if the exact year file isn't present yet
+              const msg = document.createElement('div');
+              msg.className = 'inline-note';
+              msg.textContent = `No past paper file for ${display} yet.`;
+              msg.style.marginLeft = '6px';
+              yearRow.appendChild(msg);
+              setTimeout(()=>{ if (msg && msg.parentNode) msg.parentNode.removeChild(msg); }, 1800);
+            }
+          });
+        }
+        yearRow.appendChild(b);
+      });
+
+      const actions = document.createElement('div');
+      actions.className = 'actions';
+      const viewBtn = document.createElement('button');
+      viewBtn.type = 'button';
+      // Use the success modifier for a green View action
+      viewBtn.className = 'action-btn success';
+      viewBtn.textContent = 'View';
+      // use a specialized picker that always lists the three years (or papers for FBISE)
+      viewBtn.addEventListener('click', (e)=>{ e.preventDefault(); e.stopPropagation(); openPastPaperPicker(item, boardKey); });
+      const dlBtn = document.createElement('button');
+      dlBtn.type = 'button';
+      dlBtn.className = 'action-btn primary';
+      dlBtn.textContent = 'Download';
+      dlBtn.addEventListener('click', (e)=>{ e.preventDefault(); e.stopPropagation(); openPastPaperDownloadPicker(item, boardKey); });
+      // disable actions if there are no files (or special-case Islamiyat / IGCSE 0510)
+      if (!item.files || !item.files.length || isIslamiyat || (String(item.code||'') === '0510' && String(boardKey||'').toLowerCase() === 'igcse')){
+        viewBtn.classList.add('disabled'); viewBtn.setAttribute('aria-disabled','true'); viewBtn.disabled = true;
+        dlBtn.classList.add('disabled'); dlBtn.setAttribute('aria-disabled','true'); dlBtn.disabled = true;
+      }
+      actions.append(viewBtn, dlBtn);
+
+      card.append(title, meta, yearRow, actions);
+      return card;
+    }
+
+    function renderPastPapersGrid(list, mountId, boardKey){
+      const mount = document.getElementById(mountId);
+      if (!mount) return;
+      mount.innerHTML = '';
+      list.forEach(item => mount.appendChild(createPastPaperCard(item, boardKey)) );
+    }
+
+    // ----------------------------------------------
     // Search overlay
     // ----------------------------------------------
     function openSearch(){
-      document.getElementById('search-overlay').style.display = 'grid';
-      document.getElementById('search-overlay').setAttribute('aria-hidden','false');
+      const so = document.getElementById('search-overlay'); if (so){ so.style.display = 'grid'; so.setAttribute('aria-hidden','false'); const si = document.getElementById('search-input'); if (si) si.focus(); }
     }
-    function closeSearch(){
-      document.getElementById('search-overlay').style.display = 'none';
-      document.getElementById('search-overlay').setAttribute('aria-hidden','true');
-    }
-    function renderSearchResults(items){
-      const wrap = document.getElementById('search-results');
-      wrap.innerHTML = '';
-      items.forEach(item=> wrap.appendChild(createCard(item)) );
-      if (items.length === 0){
-        wrap.innerHTML = '<p class="section-intro">No matching resources. Try different keywords (e.g., "Physics", "0510", etc.).</p>';
-      }
-    }
+    function closeSearch(){ const so = document.getElementById('search-overlay'); if (so){ so.style.display = 'none'; so.setAttribute('aria-hidden','true'); } }
+    function renderSearchResults(items){ const wrap = document.getElementById('search-results'); if (!wrap) return; wrap.innerHTML = ''; items.forEach(item=> wrap.appendChild(createCard(item)) ); if (items.length === 0){ wrap.innerHTML = '<p class="section-intro">No matching resources. Try different keywords (e.g., "Physics", "0510", etc.).</p>'; } }
     function levenshtein(a,b){
       a = (a||'').toLowerCase(); b = (b||'').toLowerCase();
       const m = a.length, n = b.length; if(m===0) return n; if(n===0) return m;
@@ -498,10 +835,11 @@ We are committed to supporting your educational journey. Explore our resources, 
     }
 
     function doSearch(){
-      const raw = document.getElementById('search-input').value.trim();
+      const raw = (document.getElementById('search-input')?.value || '').trim();
       const q = raw.toLowerCase();
       if (!q){ closeSearch(); return; }
       showLoader();
+      try{
       setTimeout(()=>{
         const pool = [...DATA.fbise, ...DATA.igcse];
         const results = pool.filter(item=>{
@@ -516,6 +854,7 @@ We are committed to supporting your educational journey. Explore our resources, 
         renderSearchResults(results); openSearch();
         hideLoader();
       }, 200);
+      }catch(e){ console.warn('doSearch outer error', e); try{ hideLoader(); }catch(_){/* ignore */} }
     }
 
     // ----------------------------------------------
@@ -736,9 +1075,8 @@ We are committed to supporting your educational journey. Explore our resources, 
     function closeViewer(){
       // ensure loader is hidden and viewer cleaned up
       hideLoader();
-      document.getElementById('viewer-overlay').style.display = 'none';
-      document.getElementById('viewer-overlay').setAttribute('aria-hidden','true');
-      document.getElementById('viewer-body').innerHTML = '';
+      const vo = document.getElementById('viewer-overlay'); if (vo){ vo.style.display = 'none'; vo.setAttribute('aria-hidden','true'); }
+      const vb = document.getElementById('viewer-body'); if (vb) vb.innerHTML = '';
       if (currentViewerObjectUrl){
         URL.revokeObjectURL(currentViewerObjectUrl);
         currentViewerObjectUrl = null;
@@ -766,7 +1104,7 @@ We are committed to supporting your educational journey. Explore our resources, 
       `;
       overlay.appendChild(panel);
       document.body.appendChild(overlay);
-      document.getElementById('hosting-close').addEventListener('click', ()=>{ document.body.removeChild(overlay); });
+      const hostingCloseBtn = document.getElementById('hosting-close'); if (hostingCloseBtn) hostingCloseBtn.addEventListener('click', ()=>{ if (overlay && overlay.parentNode) document.body.removeChild(overlay); });
     }
 
     // File picker (shows choices when a card has multiple files)
@@ -791,39 +1129,456 @@ We are committed to supporting your educational journey. Explore our resources, 
       overlay.style.display = 'grid';
       overlay.setAttribute('aria-hidden','false');
     }
+
+    // Specialized picker for Past Papers: always show the three year options (2024/2023/2022)
+    function openPastPaperPicker(item, boardKey){
+      if (!item) return;
+      const isFbise = String(boardKey || '').toLowerCase() === 'fbise';
+      const isIgcse = String(boardKey || '').toLowerCase() === 'igcse';
+      const overlay = document.getElementById('file-picker-overlay');
+      const list = document.getElementById('file-picker-list');
+      list.innerHTML = '';
+      const years = ['2024','2023','2022'];
+      const labels = isFbise ? ['Paper 1','Paper 2','Paper 3'] : (isIgcse ? ['Paper 1','Paper 2','Paper 3','Paper 4','Paper 5','Paper 6'] : years);
+      labels.forEach((label, idx)=>{
+        const found = (item.files || []).find(f => String(f.label) === String(label));
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'action-btn';
+        b.textContent = `${label}` + (found ? '' : ' — not available');
+        if (found){
+          b.addEventListener('click', (e)=>{ e.preventDefault(); e.stopPropagation(); closeFilePicker(); openViewer(found); });
+        } else {
+          b.classList.add('disabled'); b.setAttribute('aria-disabled','true'); b.disabled = true;
+        }
+        const row = document.createElement('div');
+        row.appendChild(b);
+        list.appendChild(row);
+      });
+      overlay.style.display = 'grid';
+      overlay.setAttribute('aria-hidden','false');
+    }
+
+    // Download picker: let the user pick the specific past-paper year to download
+    function openPastPaperDownloadPicker(item, boardKey){
+      if (!item) return;
+      const isIslamiyat = String(item.subject || '').toLowerCase().includes('islam');
+      const isFbise = String(boardKey || '').toLowerCase() === 'fbise';
+      const isIgcse = String(boardKey || '').toLowerCase() === 'igcse';
+      const overlay = document.getElementById('file-picker-overlay');
+      const list = document.getElementById('file-picker-list');
+      list.innerHTML = '';
+      const years = ['2024','2023','2022'];
+      const labels = isFbise ? ['Paper 1','Paper 2','Paper 3'] : (isIgcse ? ['Paper 1','Paper 2','Paper 3','Paper 4','Paper 5','Paper 6'] : years);
+      labels.forEach((label, idx)=>{
+        const found = (item.files || []).find(f => String(f.label) === String(label));
+        const row = document.createElement('div');
+        if (isIslamiyat || !found){
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'action-btn';
+          b.textContent = `${label}` + ' — not available';
+          b.classList.add('disabled'); b.setAttribute('aria-disabled','true'); b.disabled = true;
+          row.appendChild(b);
+        } else {
+          const a = document.createElement('a');
+          a.className = 'action-btn';
+          let href = found.path || '#';
+          if (isDriveUrl(href)){
+            const id = getDriveFileId(href);
+            if (id) href = driveDownloadUrl(id);
+          }
+          a.href = href;
+          a.textContent = label;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.addEventListener('click', (e)=>{ e.preventDefault(); e.stopPropagation(); closeFilePicker(); });
+          row.appendChild(a);
+        }
+        list.appendChild(row);
+      });
+      overlay.style.display = 'grid';
+      overlay.setAttribute('aria-hidden','false');
+    }
+
+    // Resource download picker for normal subjects (FBISE/IGCSE): allow choosing which file to download
+    function openResourceDownloadPicker(item){
+      if (!item || !item.files) return;
+      const overlay = document.getElementById('file-picker-overlay');
+      const list = document.getElementById('file-picker-list');
+      list.innerHTML = '<div class="full-row">Select a file to download</div>';
+      item.files.forEach(f=>{
+        const row = document.createElement('div');
+        const a = document.createElement('a');
+        a.className = 'action-btn';
+        let href = f.path || '#';
+        if (isDriveUrl(href)){
+          const id = getDriveFileId(href);
+          if (id) href = driveDownloadUrl(id);
+        }
+        a.href = href;
+        a.textContent = f.label || (f.path || 'File');
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.addEventListener('click', ()=>{ closeFilePicker(); });
+        row.appendChild(a);
+        list.appendChild(row);
+      });
+      overlay.style.display = 'grid';
+      overlay.setAttribute('aria-hidden','false');
+    }
+
     function closeFilePicker(){
       const overlay = document.getElementById('file-picker-overlay');
       if (!overlay) return;
       overlay.style.display = 'none';
       overlay.setAttribute('aria-hidden','true');
-      document.getElementById('file-picker-list').innerHTML = '';
+      const fl = document.getElementById('file-picker-list'); if (fl) fl.innerHTML = '';
     }
 
     // ----------------------------------------------
     // Init
     // ----------------------------------------------
     function init(){
-      renderGrid(DATA.fbise, 'fbise-grid');
-      renderGrid(DATA.igcse, 'igcse-grid');
-      setupResponsive();
-      document.getElementById('search-btn').addEventListener('click', doSearch);
-      document.getElementById('search-input').addEventListener('keydown', (e)=>{ if (e.key==='Enter') doSearch(); });
-      document.getElementById('search-close').addEventListener('click', closeSearch);
-      document.getElementById('viewer-close').addEventListener('click', closeViewer);
-      // file picker cancel/overlay close
-      document.getElementById('file-picker-cancel')?.addEventListener('click', closeFilePicker);
-      document.getElementById('file-picker-overlay')?.addEventListener('click', (e)=>{ if (e.target && e.target.id === 'file-picker-overlay') closeFilePicker(); });
-      document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') closeFilePicker(); });
-      // attach route handlers (single place)
-      document.querySelectorAll('[data-route]').forEach(a=>{
-        a.addEventListener('click', (e)=>{ e.preventDefault(); const r = a.getAttribute('data-route'); showRoute(r); });
-      });
+      try{
+        if (window._initHasRun) { try{ console.log('[init] skipped duplicate', new Date().toISOString()); console.trace(); }catch(_){ } return; }
+        window._initHasRun = true;
+        try{ console.log('[init] start', new Date().toISOString()); console.trace(); }catch(_){ }
+        // suppress the initial navigation loader to avoid showing it twice on startup
+        try{ window._suppressInitialLoader = true; window._initialRouteShown = false; }catch(_){ }
+        // Create debug panel early so any startup errors are visible
+        try{ /* debug disabled */ }catch(e){ /* ignore */ }
+        // store a copy of the left header HTML for future reference
+        try{ window._headerAuthLeftDefault = document.getElementById('header-auth-left')?.innerHTML || window._headerAuthLeftDefault || ''; }catch(e){ /* ignore */ }
+        // restore a persisted local-signed-in user (if any)
+        // Auth removed: do not attempt to restore persisted account
+        // Safety: ensure overlays are hidden (fixes cases where an overlay may remain visible and block clicks)
+        ['loading-overlay','search-overlay','viewer-overlay','file-picker-overlay','hosting-overlay'].forEach(id => { const el = document.getElementById(id); if (el){ el.style.display = 'none'; el.setAttribute('aria-hidden','true'); } });
+
+        renderGrid(DATA.fbise, 'fbise-grid');
+        renderGrid(DATA.igcse, 'igcse-grid');
+        // Past papers are rendered dynamically into the board when a specific board is opened
+        setupResponsive();
+        document.getElementById('search-btn')?.addEventListener('click', doSearch);
+        document.getElementById('search-input')?.addEventListener('keydown', (e)=>{ if (e.key==='Enter') doSearch(); });
+        document.getElementById('search-close')?.addEventListener('click', closeSearch);
+        document.getElementById('viewer-close')?.addEventListener('click', closeViewer);
+        // file picker cancel/overlay close
+        document.getElementById('file-picker-cancel')?.addEventListener('click', closeFilePicker);
+        document.getElementById('file-picker-overlay')?.addEventListener('click', (e)=>{ if (e.target && e.target.id === 'file-picker-overlay') closeFilePicker(); });
+        document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') closeFilePicker(); });
+        // Left-header auth buttons open the auth modal in the selected mode (signup / signin)
+
+        // attach route handlers (single place)
+        document.querySelectorAll('[data-route]').forEach(a=>{
+          a.addEventListener('click', (e)=>{ 
+            e.preventDefault(); const r = a.getAttribute('data-route');
+            console.log('route click:', r, 'currentRoute:', window.currentRoute, 'pastPapersState:', pastPapersState);
+            // Toggle behavior: if already on Past Papers and a board is open, pressing Past Papers returns to the selection
+            if (r === 'pastpapers' && window.currentRoute === 'pastpapers' && pastPapersState !== 'selection'){
+              showPastPapersSelection();
+              return;
+            }
+            showRoute(r);
+            // close mobile nav if it was open
+            const _navLinks = document.querySelector('.nav-links');
+            if (_navLinks && _navLinks.classList.contains('open')){
+              _navLinks.classList.remove('open');
+              const _nt = document.getElementById('nav-toggle'); if (_nt) _nt.setAttribute('aria-expanded','false');
+            }
+          });
+        });
+
+        // Nav toggle for small screens
+        const navToggle = document.getElementById('nav-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        if (navToggle && navLinks){
+          navToggle.addEventListener('click', (e)=>{ e.preventDefault(); const opened = navLinks.classList.toggle('open'); navToggle.setAttribute('aria-expanded', String(opened)); });
+        // close when clicking outside the nav while open (guard event target)
+        document.addEventListener('click', (e)=>{ try{ if (!navLinks.classList.contains('open')) return; const tgt = e.target; const el = (tgt instanceof Element) ? tgt : null; if (!el) return; if (!el.closest('.nav') && !el.closest('#nav-toggle')) { navLinks.classList.remove('open'); navToggle.setAttribute('aria-expanded','false'); } }catch(_){ /* ignore */ } });
+        }
+
+        // Sidebar: toggle menu and wire links
+        const sbToggle = document.getElementById('sidebar-toggle');
+        const sbMenu = document.getElementById('sidebar-menu');
+        if (sbToggle && sbMenu){
+          sbToggle.addEventListener('click', (e)=>{ const opened = sbMenu.classList.toggle('open'); sbMenu.setAttribute('aria-hidden', String(!opened)); } );
+          // close when clicking outside the sidebar while open (guard event target)
+          document.addEventListener('click', (e)=>{ try{ const tgt = e.target; const el = (tgt instanceof Element) ? tgt : null; if (!el) return; if (!sbMenu.classList.contains('open')) return; if (!el.closest('.left-sidebar')) { sbMenu.classList.remove('open'); sbMenu.setAttribute('aria-hidden','true'); } }catch(_){ /* ignore */ } });
+          // ensure sidebar links trigger routing and close the menu
+          try{ sbMenu.querySelectorAll('[data-route]').forEach(a=> a.addEventListener('click', (e)=>{ e.preventDefault(); const r = a.getAttribute('data-route'); if (r === 'pastpapers' && window.currentRoute === 'pastpapers' && pastPapersState !== 'selection'){ showPastPapersSelection(); } else { showRoute(r); } sbMenu.classList.remove('open'); sbMenu.setAttribute('aria-hidden','true'); })) ; }catch(_){ /* ignore */ }
+        }
+      }catch(e){ console.error('init failed', e); }
+
+        // Past Papers open toggles -> now opens the board view
+        document.getElementById('open-pf-fbise')?.addEventListener('click', (e)=>{ e.preventDefault(); showPastPapersBoard('fbise'); });
+        document.getElementById('open-pf-igcse')?.addEventListener('click', (e)=>{ e.preventDefault(); showPastPapersBoard('igcse'); });
+
+        // Open sidebar on hover for non-touch devices (only when hovering the icon or the menu)
+        try{
+          const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0);
+          if (!isTouch){
+            const sidebarBtn = document.getElementById('sidebar-toggle');
+            const leftSidebar = document.querySelector('.left-sidebar');
+            if (sidebarBtn && sbMenu){
+              const openSidebar = ()=>{ sbMenu.classList.add('open'); sbMenu.setAttribute('aria-hidden','false'); };
+              const closeSidebar = ()=>{ sbMenu.classList.remove('open'); sbMenu.setAttribute('aria-hidden','true'); };
+              sidebarBtn.addEventListener('mouseenter', openSidebar);
+              sbMenu.addEventListener('mouseenter', openSidebar);
+              if (leftSidebar) leftSidebar.addEventListener('mouseleave', closeSidebar);
+            }
+          }
+        } catch(e){ /* ignore */ }
+
+        // Ensure EmailJS SDK is loaded (insert script if needed) and initialize it
+        async function ensureEmailJsLoaded(timeoutMs = 8000){
+          if (window.emailjs) return;
+          return new Promise((resolve, reject)=>{
+            const src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser/dist/email.min.js';
+            let existing = document.querySelector('script[src="' + src + '"]');
+            if (!existing){
+              existing = document.createElement('script');
+              existing.src = src;
+              existing.async = true;
+              document.head.appendChild(existing);
+            }
+            let done = false;
+            const onLoad = ()=>{ if (done) return; done = true; resolve(); };
+            const onError = (ev)=>{ if (done) return; done = true; reject(new Error('EmailJS SDK failed to load')); };
+            existing.addEventListener('load', onLoad);
+            existing.addEventListener('error', onError);
+            setTimeout(()=>{ if (done) return; done = true; reject(new Error('EmailJS SDK load timeout')); }, timeoutMs);
+          });
+        }
+        try{
+          (async ()=>{
+            try{ await ensureEmailJsLoaded(); }catch(e){ console.warn('[emailjs] SDK load failed', e); return; }
+            if (window.EMAILJS_OPTIONS && window.EMAILJS_OPTIONS.public_key && window.emailjs && !window._emailJsInit){
+              try{ emailjs.init(window.EMAILJS_OPTIONS.public_key); window._emailJsInit = true; console.log('[emailjs] initialized'); }catch(e){ console.warn('[emailjs] init failed', e); }
+            }
+          })();
+        }catch(_){ }
+
+        // Support form: send directly to configured endpoint (if set), EmailJS, or fallback to Gmail compose
+        try{
+          const fileInput = document.getElementById('support-attachments');
+          const attachBtn = document.getElementById('support-attach');
+          const attachList = document.getElementById('support-attachments-list');
+
+          function renderAttachments(){
+            if (!attachList || !fileInput) return;
+            attachList.innerHTML = '';
+            const files = Array.from(fileInput.files || []);
+            files.forEach((f, idx) => {
+              const pill = document.createElement('span');
+              pill.style.display = 'inline-flex';
+              pill.style.alignItems = 'center';
+              pill.style.gap = '8px';
+              pill.style.padding = '6px 8px';
+              pill.style.border = '1px solid var(--border)';
+              pill.style.borderRadius = '10px';
+              pill.style.background = 'var(--card)';
+              pill.style.fontSize = '13px';
+              pill.textContent = f.name;
+              const rem = document.createElement('button');
+              rem.type = 'button';
+              rem.title = 'Remove';
+              rem.style.marginLeft = '8px';
+              rem.style.border = 'none';
+              rem.style.background = 'transparent';
+              rem.style.cursor = 'pointer';
+              rem.textContent = '✕';
+              rem.addEventListener('click', function(){
+                // remove file at index
+                try{
+                  const dt = new DataTransfer();
+                  Array.from(fileInput.files || []).forEach((file, i)=>{ if (i !== idx) dt.items.add(file); });
+                  fileInput.files = dt.files;
+                  renderAttachments();
+                }catch(err){
+                  // fallback: clear all
+                  fileInput.value = '';
+                  renderAttachments();
+                }
+              });
+              pill.appendChild(rem);
+              attachList.appendChild(pill);
+            });
+          }
+
+          attachBtn?.addEventListener('click', function(){ if (fileInput) fileInput.click(); });
+          fileInput?.addEventListener('change', function(){ renderAttachments(); });
+
+          document.getElementById('support-clear')?.addEventListener('click', function(){ const b = document.getElementById('support-body'); if (b) b.value=''; if (fileInput) { fileInput.value=''; renderAttachments(); } });
+
+          document.getElementById('support-form')?.addEventListener('submit', async function(e){
+            e.preventDefault();
+            const bodyEl = document.getElementById('support-body');
+            const body = (bodyEl?.value || '').trim();
+            if (!body){
+              try{ alert('Please enter a message describing your issue before sending.'); }catch(_){ }
+              if (bodyEl) bodyEl.focus();
+              return;
+            }
+
+            const to = 'aarizzqadeer@gmail.com';
+            const endpoint = (window.SUPPORT_FORM_ENDPOINT || '').trim();
+            const emailjsOpts = (window.EMAILJS_OPTIONS || null);
+            const files = Array.from(fileInput?.files || []);
+            const fromEmail = (document.getElementById('support-email')?.value || '').trim();
+
+            // If attachments present and no server endpoint and no EmailJS, we cannot attach files to Gmail compose — block.
+            if (files.length > 0 && !endpoint && !emailjsOpts){
+              try{ alert('Attachments require a configured server endpoint or EmailJS. Please remove attachments or configure one.'); }catch(_){ }
+              return;
+            }
+
+            // Prefer EmailJS if configured (client-side direct send)
+            if (emailjsOpts && emailjsOpts.service_id && emailjsOpts.template_id && emailjsOpts.public_key){
+              try{
+                // ensure SDK loaded and initialized
+                try{ await ensureEmailJsLoaded(); }catch(e){ console.error('EmailJS SDK load failed', e); try{ alert('EmailJS failed to load; check your internet connection or serve the site via http (localhost)'); }catch(_){ } return; }
+                try{ if (window.emailjs && !window._emailJsInit){ try{ emailjs.init(emailjsOpts.public_key); window._emailJsInit = true; }catch(_){ /* ignore */ } } }catch(_){ }
+                showLoader();
+                // use sendForm/send depending on attachments (the support-email field is named 'reply_to' so EmailJS can use it as Reply-To)
+                const formEl = document.getElementById('support-form');
+                try{
+                  // ensure reply and sender fields are set so the EmailJS template and headers can use them
+                  if (fromEmail){
+                    try{
+                      let replyField = formEl.querySelector('[name="reply_to"]');
+                      if (!replyField){ replyField = document.createElement('input'); replyField.type='hidden'; replyField.name='reply_to'; formEl.appendChild(replyField); }
+                      replyField.value = fromEmail;
+                      let senderField = formEl.querySelector('[name="sender_email"]');
+                      if (!senderField){ senderField = document.createElement('input'); senderField.type='hidden'; senderField.name='sender_email'; formEl.appendChild(senderField); }
+                      senderField.value = fromEmail;
+                    }catch(_){ /* ignore */ }
+                  }
+
+                  // create a formatted message body matching your requested layout
+                  const formattedMessage = 'Support TakeItEasy!\nFrom: ' + (fromEmail || 'Anonymous') + '\nTo: ' + to + '\n\n' + '---------------------------------------------------------------------------------------------------------------------------------------------------' + '\n\n' + body;
+
+                  // If there are no attachments, prefer `emailjs.send` with explicit params so the template receives the formatted message and reply_to
+                  if (files.length === 0){
+                    const params = {
+                      message: formattedMessage,
+                      reply_to: fromEmail || '',
+                      sender_email: fromEmail || '',
+                      to_email: to
+                    };
+                    const result = await emailjs.send(emailjsOpts.service_id, emailjsOpts.template_id, params);
+                  } else {
+                    // ensure the form includes the formatted message so templates using {{message}} get the same content
+                    try{ let m = formEl.querySelector('[name="message"]'); if (!m){ m = document.createElement('input'); m.type='hidden'; m.name='message'; formEl.appendChild(m); } m.value = formattedMessage; }catch(_){ }
+                    // use sendForm so file inputs are included automatically
+                    const result = await emailjs.sendForm(emailjsOpts.service_id, emailjsOpts.template_id, formEl);
+                  }
+
+                  try{ alert('Message sent — thank you!'); }catch(_){ }
+                  if (bodyEl) bodyEl.value = '';
+                  if (fileInput) { fileInput.value=''; renderAttachments(); }
+                }catch(err){
+                  console.error('EmailJS send failed', err);
+                  const msg = (err && (err.text || err.message)) ? (err.text || err.message) : (typeof err === 'string' ? err : (err && err.statusText) ? err.statusText : JSON.stringify(err));
+                  try{ alert('Failed to send via EmailJS: ' + msg); }catch(_){ }
+                }
+                try{ hideLoader(); }catch(_){ }
+                return;
+              }catch(err){ console.error('EmailJS branch failed', err); }
+            }
+
+            // server endpoint (multipart) if present
+            if (endpoint){
+              try{
+                showLoader();
+
+                const fd = new FormData();
+                fd.append('to', to);
+                fd.append('from', fromEmail);
+                fd.append('body', body);
+                files.forEach((f, idx)=> fd.append('attachments[]', f));
+
+                const res = await fetch(endpoint, { method: 'POST', body: fd });
+                if (res.ok){
+                  try{ alert('Message sent — thank you!'); }catch(_){ }
+                  if (bodyEl) bodyEl.value = '';
+                  if (fileInput) { fileInput.value=''; renderAttachments(); }
+                } else {
+                  try{ alert('Failed to send message (server error).'); }catch(_){ }
+                }
+              }catch(err){
+                console.error('support send failed', err);
+                try{ alert('Failed to send message (network).'); }catch(_){ }
+              }finally{
+                try{ hideLoader(); }catch(_){ }
+              }
+              return;
+            }
+
+            // fallback: Gmail compose with the message body only (no attachments)
+            const subject = 'Support request' + (fromEmail ? (' from ' + fromEmail) : '');
+            const bodyWithFrom = (fromEmail ? ('From: ' + fromEmail + '\n\n') : '') + body;
+            const gmailUrl = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(to) + '&subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(bodyWithFrom);
+            window.open(gmailUrl, '_blank');
+          });
+        }catch(e){ /* ignore */ }
+
+      (function(){
+        const THEME_KEY = 'site:theme';
+        const themeToggle = document.getElementById('theme-toggle');
+        const moonSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>`;
+        const sunSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>`;
+        function applyTheme(t){
+          if(!themeToggle) return;
+          if(t === 'dark'){
+            document.documentElement.classList.add('dark-theme');
+            themeToggle.setAttribute('aria-pressed','true');
+            themeToggle.title = 'Switch to light mode';
+            themeToggle.innerHTML = sunSvg;
+          } else {
+            document.documentElement.classList.remove('dark-theme');
+            themeToggle.setAttribute('aria-pressed','false');
+            themeToggle.title = 'Switch to dark mode';
+            themeToggle.innerHTML = moonSvg;
+          }
+          try{ localStorage.setItem(THEME_KEY, t); }catch(e){ /* ignore */ }
+        }
+        try{
+          let t = localStorage.getItem(THEME_KEY);
+          if (!t) t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+          applyTheme(t);
+        } catch(e){ /* ignore */ }
+        themeToggle?.addEventListener('click', ()=>{ const next = document.documentElement.classList.contains('dark-theme') ? 'light' : 'dark'; applyTheme(next); });
+      })();
+
+        document.addEventListener('click', function(e){ try{
+          const tgt = e.target instanceof Element ? e.target.closest('button, a') : null; if (!tgt) return; // only buttons/links
+          // ignore elements we don't want loader for
+          if (tgt.matches('#theme-toggle, #nav-toggle, #sidebar-toggle, .no-loader, .disabled')) return;
+          // ignore header profile and its menu to avoid brief loader when just toggling the profile menu
+          if (tgt.closest && tgt.closest('#header-profile, #header-profile-menu')) return;
+          // show loader; long-running flows will show/hide themselves
+          try{ showLoader(); }catch(_){ }
+          // fallback auto-hide in case the target doesn't hide the loader later
+          setTimeout(()=>{ try{ hideLoader(); }catch(_){ } }, 700);
+        }catch(_){ /* ignore */ } });
+
+      // Disable text selection and copying for page text (allow inputs and textareas) — guard EventTarget
+      document.addEventListener('selectstart', function(e){ try{ const tgt = e.target; const el = (tgt instanceof Element) ? tgt : null; if (el && el.closest && el.closest('input, textarea, [contenteditable="true"]')) return; e.preventDefault(); }catch(_){ /* ignore */ } });
+      document.addEventListener('copy', function(e){ try{ const tgt = e.target; const el = (tgt instanceof Element) ? tgt : null; if (el && el.closest && el.closest('input, textarea, [contenteditable="true"]')) return; e.preventDefault(); }catch(_){ /* ignore */ } });
+      document.addEventListener('cut', function(e){ try{ const tgt = e.target; const el = (tgt instanceof Element) ? tgt : null; if (el && el.closest && el.closest('input, textarea, [contenteditable="true"]')) return; e.preventDefault(); }catch(_){ /* ignore */ } });
+
       // start with persisted route (or home)
-      showLoader();
       const route = localStorage.getItem('site:route') || 'home';
+      try{ showLoader(); }catch(_){ }
       setTimeout(()=>{ showRoute(route); }, 250);
     }
-    window.addEventListener('DOMContentLoaded', init);
-  </script>-->
+
+    document.addEventListener('DOMContentLoaded', function(){
+      try{
+        if (typeof init === 'function') { init(); }
+      }catch(e){ console.error('init failed on DOMContentLoaded', e); }
+    });
+  </script>
 </body>
 </html>
