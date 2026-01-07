@@ -666,7 +666,8 @@ We are committed to supporting your educational journey. Explore our resources, 
           // when navigating to Past Papers, always show the selection buttons
           if (name === 'pastpapers') showPastPapersSelection();
           window.currentRoute = name;
-          localStorage.setItem('site:route', name);
+          // Use sessionStorage so the selected route persists across reloads but is cleared when the tab is closed
+          sessionStorage.setItem('site:route', name);
           window.scrollTo({top:0, behavior:'smooth'});
         } catch(err){
           console.error('showRoute error', err);
