@@ -747,7 +747,7 @@ We are committed to supporting your educational journey. Explore our resources, 
       const labels = isFbise ? ['Paper 1','Paper 2','Paper 3'] : (String(boardKey||'').toLowerCase() === 'igcse' ? ['Paper 1','Paper 2','Paper 3','Paper 4','Paper 5','Paper 6'] : ['2024','2023','2022']);
 
       labels.forEach((label, idx)=>{
-        const found = (item.files || []).find(f => String(f.label) === String(label));
+        const found = (item.files || []).find(f => String(f.label || '').trim() === String(label || '').trim());
         const display = label;
         const b = document.createElement('button');
         b.type = 'button';
@@ -1140,7 +1140,7 @@ We are committed to supporting your educational journey. Explore our resources, 
       const years = ['2024','2023','2022'];
       const labels = isFbise ? ['Paper 1','Paper 2','Paper 3'] : (isIgcse ? ['Paper 1','Paper 2','Paper 3','Paper 4','Paper 5','Paper 6'] : years);
       labels.forEach((label, idx)=>{
-        const found = (item.files || []).find(f => String(f.label) === String(label));
+        const found = (item.files || []).find(f => String(f.label || '').trim() === String(label || '').trim());
         const b = document.createElement('button');
         b.type = 'button';
         b.className = 'action-btn';
@@ -1170,7 +1170,7 @@ We are committed to supporting your educational journey. Explore our resources, 
       const years = ['2024','2023','2022'];
       const labels = isFbise ? ['Paper 1','Paper 2','Paper 3'] : (isIgcse ? ['Paper 1','Paper 2','Paper 3','Paper 4','Paper 5','Paper 6'] : years);
       labels.forEach((label, idx)=>{
-        const found = (item.files || []).find(f => String(f.label) === String(label));
+        const found = (item.files || []).find(f => String(f.label || '').trim() === String(label || '').trim());
         const row = document.createElement('div');
         if (isIslamiyat || !found){
           const b = document.createElement('button');
